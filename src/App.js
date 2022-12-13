@@ -1,10 +1,11 @@
 import UseQueryExample from "./components/UseQueryExample";
+import MiningPage from "./components/Mining";
 
 function App() {
 
   return (
     <div>
-      <UseQueryExample/>
+      <MiningPage/>
     </div>
   );
 }
