@@ -1,92 +1,50 @@
 import React, {useEffect} from 'react'
 import {useStopwatch} from 'react-timer-hook';
 import {Box, Button} from '@chakra-ui/react'
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import ApiClient from "../clients/pokecoin/src/ApiClient";
-import CardsApi from "../clients/pokecoin/src/api/CardsApi";
-import {BlockchainApi} from "../clients/pokecoin/src";
+import {BlockchainApi, WalletApi} from "../clients/pokecoin/src";
 
 
-async function postNewBlock(block) {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDQwOTgyLCJleHAiOjE2NzE1MjczODJ9.1_erFw6bSCNk8DM9rc4lC1NPhX3Fl2A5IVppQvjbVK0"
+const apiClient = new ApiClient("http://localhost:3000/")
+let token = apiClient.authentications['token']
+token.apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDU3NTE0LCJleHAiOjE2NzE1NDM5MTR9.dj1wDmDgBlLV9UwfeKdz_g7_zABhSL0kMGF3kRAquuQ'
 
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'token': token
-        },
-        body: JSON.stringify(block)
-    }
-
-    //console.log('block:', JSON.stringify(block))
-
-    try {
-        return await fetch('http://localhost:3000/blockchain/blocks', requestOptions)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-async function getWalletBalance() {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDQwOTgyLCJleHAiOjE2NzE1MjczODJ9.1_erFw6bSCNk8DM9rc4lC1NPhX3Fl2A5IVppQvjbVK0"
-
-    const requestOptions = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'token': token
-        }
-    }
-
-    try {
-        return (await fetch('http://localhost:3000/wallet/balance', requestOptions)).json()
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-function WalletBalance() {
-    const [walletBalance, setWalletBalance] = React.useState(0)
-
-    async function getBalance() {
-        let newBalance = (await getWalletBalance()).amount
-        setWalletBalance(newBalance)
-    }
-
-    getBalance().catch(console.log)
-
-    return (
-        <div>Wallet Balance: {walletBalance}</div>
-    )
-}
-
+const blockchainApi = new BlockchainApi(apiClient);
+const walletApi = new WalletApi(apiClient);
 
 let worker = null
 
 function MiningPage() {
-    const [newHash, setNewHash] = React.useState('')
     const [miningStatus, setMiningStatus] = React.useState(true)
 
-    const {data} = useQuery(['lastBlock', newHash],
+    const {data: postedBlock, mutate} = useMutation(postNewBlock)
+    async function postNewBlock (block) {
+        return await blockchainApi.blockchainBlocksPost({body: block})
+    }
+
+    const {data: lastBlock} = useQuery(['lastBlock', postedBlock],
         async () => {
-            const apiClient = new ApiClient("http://localhost:3000/");
-            const blockchainApi = new BlockchainApi(apiClient);
-            const response = await blockchainApi.blockchainLastBlockGet();
+            return await blockchainApi.blockchainLastBlockGet();
+        }
+    )
+
+    useQuery(['walletBalance', postedBlock],
+        async () => {
+            const response = await walletApi.walletBalanceGet()
+            localStorage.setItem('walletBalance', response.amount)
             return response
         }
     )
 
-
     async function runMining() {
-        const _prevHash = data.hash
+        const _prevHash = lastBlock.hash
         worker.postMessage({previousHash: _prevHash, difficulty: 4})
 
         worker.onmessage = (message) => {
             if (!miningStatus) return
-            postNewBlock(message.data.newBlock).then(() => {
-                setNewHash(message.data.newHash)
-            })
+            localStorage.setItem('newHash', message.data.newHash)
+            mutate(message.data.newBlock)
         }
     }
 
@@ -100,11 +58,11 @@ function MiningPage() {
 
     useEffect(() => {
         worker?.terminate()
-        if (miningStatus && data) {
+        if (miningStatus && lastBlock) {
             worker = new Worker(new URL('../helpers/worker.js', import.meta.url));
             runMining().catch(console.log)
         }
-    }, [miningStatus, data])
+    }, [miningStatus, lastBlock])
 
     function Stopwatch() {
         const {seconds} = useStopwatch({autoStart: true});
@@ -125,8 +83,8 @@ function MiningPage() {
                 margin: '100px 400px 10px 400px'
             }}>
                 <div>
-                    <WalletBalance/>
-                    {newHash && <p>Last hash found: {newHash}</p>}
+                    Wallet Balance: {localStorage.getItem('walletBalance')}
+                    {<p>Last hash found: {localStorage.getItem('newHash')}</p>}
                     {miningStatus ? <p>miningStatus: Running</p> : <p>miningStatus: Stopped</p>}
                     <Stopwatch/>
                 </div>

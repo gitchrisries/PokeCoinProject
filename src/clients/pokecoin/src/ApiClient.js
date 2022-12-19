@@ -55,7 +55,7 @@ class ApiClient {
          * @default {}
          */
         this.defaultHeaders = {
-            'User-Agent': 'OpenAPI-Generator/1.5.4/Javascript'
+            //'User-Agent': 'OpenAPI-Generator/1.5.4/Javascript'
         };
 
         /**
