@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/webengineering-openapi-demo.iml" filepath="$PROJECT_DIR$/.idea/webengineering-openapi-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/PokeCoinProject.iml" filepath="$PROJECT_DIR$/.idea/PokeCoinProject.iml" />
     </modules>
   </component>
 </project>

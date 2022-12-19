@@ -31,13 +31,12 @@ let apiInstance = new Pokecoin.BlockchainApi();
 let opts = {
   'body': new Pokecoin.AddBlockBody() // AddBlockBody | 
 };
-apiInstance.blockchainBlocksPost(opts, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.blockchainBlocksPost(opts).then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -73,13 +72,12 @@ Name | Type | Description  | Notes
 import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.BlockchainApi();
-apiInstance.blockchainCurrentDifficultyGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.blockchainCurrentDifficultyGet().then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -112,13 +110,12 @@ No authorization required
 import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.BlockchainApi();
-apiInstance.blockchainLastBlockGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.blockchainLastBlockGet().then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters

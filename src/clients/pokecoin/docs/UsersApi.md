@@ -32,13 +32,12 @@ let apiInstance = new Pokecoin.UsersApi();
 let opts = {
   'body': new Pokecoin.ChangePasswordBody() // ChangePasswordBody | 
 };
-apiInstance.authChangePasswordPost(opts, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.authChangePasswordPost(opts).then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -77,13 +76,12 @@ let apiInstance = new Pokecoin.UsersApi();
 let opts = {
   'body': new Pokecoin.LoginBody() // LoginBody | 
 };
-apiInstance.authLoginPost(opts, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.authLoginPost(opts).then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -125,13 +123,12 @@ token.apiKey = 'YOUR API KEY';
 //token.apiKeyPrefix = 'Token';
 
 let apiInstance = new Pokecoin.UsersApi();
-apiInstance.authMeGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.authMeGet().then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -167,13 +164,12 @@ let apiInstance = new Pokecoin.UsersApi();
 let opts = {
   'body': new Pokecoin.RegisterBody() // RegisterBody | 
 };
-apiInstance.authRegisterPost(opts, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.authRegisterPost(opts).then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters

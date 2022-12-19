@@ -40,20 +40,12 @@ export default class CardsApi {
     }
 
 
-    /**
-     * Callback function to receive the result of the cardsCardIdGet operation.
-     * @callback module:api/CardsApi~cardsCardIdGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/CardResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
 
     /**
      * @param {String} cardId card id
-     * @param {module:api/CardsApi~cardsCardIdGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/CardResponse}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/CardResponse} and HTTP response
      */
-    cardsCardIdGet(cardId, callback) {
+    cardsCardIdGetWithHttpInfo(cardId) {
       let postBody = null;
       // verify the required parameter 'cardId' is set
       if (cardId === undefined || cardId === null) {
@@ -77,25 +69,28 @@ export default class CardsApi {
       return this.apiClient.callApi(
         '/cards/{cardId}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the cardsGet operation.
-     * @callback module:api/CardsApi~cardsGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/CardsResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @param {String} cardId card id
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/CardResponse}
      */
+    cardsCardIdGet(cardId) {
+      return this.cardsCardIdGetWithHttpInfo(cardId)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
      * @param {Object} opts Optional parameters
      * @param {Number} opts.page Page starting by index 0
-     * @param {module:api/CardsApi~cardsGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/CardsResponse}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/CardsResponse} and HTTP response
      */
-    cardsGet(opts, callback) {
+    cardsGetWithHttpInfo(opts) {
       opts = opts || {};
       let postBody = null;
 
@@ -116,24 +111,28 @@ export default class CardsApi {
       return this.apiClient.callApi(
         '/cards/', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the cardsPackagesCardPackNameBuyDefaultPackageGet operation.
-     * @callback module:api/CardsApi~cardsPackagesCardPackNameBuyDefaultPackageGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/BuyDefaultPackageSchemaResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @param {Object} opts Optional parameters
+     * @param {Number} opts.page Page starting by index 0
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/CardsResponse}
      */
+    cardsGet(opts) {
+      return this.cardsGetWithHttpInfo(opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
      * @param {String} cardPackName name of the cardpack
-     * @param {module:api/CardsApi~cardsPackagesCardPackNameBuyDefaultPackageGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/BuyDefaultPackageSchemaResponse}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/BuyDefaultPackageSchemaResponse} and HTTP response
      */
-    cardsPackagesCardPackNameBuyDefaultPackageGet(cardPackName, callback) {
+    cardsPackagesCardPackNameBuyDefaultPackageGetWithHttpInfo(cardPackName) {
       let postBody = null;
       // verify the required parameter 'cardPackName' is set
       if (cardPackName === undefined || cardPackName === null) {
@@ -157,24 +156,27 @@ export default class CardsApi {
       return this.apiClient.callApi(
         '/cards/packages/{cardPackName}/buyDefaultPackage', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the cardsPackagesCardPackNameGet operation.
-     * @callback module:api/CardsApi~cardsPackagesCardPackNameGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/CardPack} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @param {String} cardPackName name of the cardpack
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/BuyDefaultPackageSchemaResponse}
      */
+    cardsPackagesCardPackNameBuyDefaultPackageGet(cardPackName) {
+      return this.cardsPackagesCardPackNameBuyDefaultPackageGetWithHttpInfo(cardPackName)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
      * @param {String} cardPackName name of the cardpack
-     * @param {module:api/CardsApi~cardsPackagesCardPackNameGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/CardPack}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/CardPack} and HTTP response
      */
-    cardsPackagesCardPackNameGet(cardPackName, callback) {
+    cardsPackagesCardPackNameGetWithHttpInfo(cardPackName) {
       let postBody = null;
       // verify the required parameter 'cardPackName' is set
       if (cardPackName === undefined || cardPackName === null) {
@@ -198,23 +200,26 @@ export default class CardsApi {
       return this.apiClient.callApi(
         '/cards/packages/{cardPackName}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the cardsPackagesCurrentPackageCostGet operation.
-     * @callback module:api/CardsApi~cardsPackagesCurrentPackageCostGetCallback
-     * @param {String} error Error message, if any.
-     * @param {Number} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @param {String} cardPackName name of the cardpack
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/CardPack}
      */
+    cardsPackagesCardPackNameGet(cardPackName) {
+      return this.cardsPackagesCardPackNameGetWithHttpInfo(cardPackName)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
-     * @param {module:api/CardsApi~cardsPackagesCurrentPackageCostGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Number}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Number} and HTTP response
      */
-    cardsPackagesCurrentPackageCostGet(callback) {
+    cardsPackagesCurrentPackageCostGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -233,23 +238,25 @@ export default class CardsApi {
       return this.apiClient.callApi(
         '/cards/packages/currentPackageCost', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the cardsPackagesGet operation.
-     * @callback module:api/CardsApi~cardsPackagesGetCallback
-     * @param {String} error Error message, if any.
-     * @param {Array.<String>} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Number}
      */
+    cardsPackagesCurrentPackageCostGet() {
+      return this.cardsPackagesCurrentPackageCostGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
-     * @param {module:api/CardsApi~cardsPackagesGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<String>}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<String>} and HTTP response
      */
-    cardsPackagesGet(callback) {
+    cardsPackagesGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -268,23 +275,25 @@ export default class CardsApi {
       return this.apiClient.callApi(
         '/cards/packages', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the cardsUsercardsGet operation.
-     * @callback module:api/CardsApi~cardsUsercardsGetCallback
-     * @param {String} error Error message, if any.
-     * @param {Array.<module:model/UserCard>} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<String>}
      */
+    cardsPackagesGet() {
+      return this.cardsPackagesGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
-     * @param {module:api/CardsApi~cardsUsercardsGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/UserCard>}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/UserCard>} and HTTP response
      */
-    cardsUsercardsGet(callback) {
+    cardsUsercardsGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -303,8 +312,18 @@ export default class CardsApi {
       return this.apiClient.callApi(
         '/cards/usercards', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
+    }
+
+    /**
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/UserCard>}
+     */
+    cardsUsercardsGet() {
+      return this.cardsUsercardsGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 

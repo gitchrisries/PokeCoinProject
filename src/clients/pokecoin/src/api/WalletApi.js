@@ -36,19 +36,11 @@ export default class WalletApi {
     }
 
 
-    /**
-     * Callback function to receive the result of the walletBalanceGet operation.
-     * @callback module:api/WalletApi~walletBalanceGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/BalanceResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
 
     /**
-     * @param {module:api/WalletApi~walletBalanceGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/BalanceResponse}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/BalanceResponse} and HTTP response
      */
-    walletBalanceGet(callback) {
+    walletBalanceGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -67,8 +59,18 @@ export default class WalletApi {
       return this.apiClient.callApi(
         '/wallet/balance', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
+    }
+
+    /**
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/BalanceResponse}
+     */
+    walletBalanceGet() {
+      return this.walletBalanceGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 
