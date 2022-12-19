@@ -27,13 +27,12 @@ import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.CardsApi();
 let cardId = "cardId_example"; // String | card id
-apiInstance.cardsCardIdGet(cardId, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.cardsCardIdGet(cardId).then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -72,13 +71,12 @@ let apiInstance = new Pokecoin.CardsApi();
 let opts = {
   'page': 56 // Number | Page starting by index 0
 };
-apiInstance.cardsGet(opts, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.cardsGet(opts).then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -121,13 +119,12 @@ token.apiKey = 'YOUR API KEY';
 
 let apiInstance = new Pokecoin.CardsApi();
 let cardPackName = "cardPackName_example"; // String | name of the cardpack
-apiInstance.cardsPackagesCardPackNameBuyDefaultPackageGet(cardPackName, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.cardsPackagesCardPackNameBuyDefaultPackageGet(cardPackName).then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -164,13 +161,12 @@ import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.CardsApi();
 let cardPackName = "cardPackName_example"; // String | name of the cardpack
-apiInstance.cardsPackagesCardPackNameGet(cardPackName, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.cardsPackagesCardPackNameGet(cardPackName).then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -206,13 +202,12 @@ No authorization required
 import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.CardsApi();
-apiInstance.cardsPackagesCurrentPackageCostGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.cardsPackagesCurrentPackageCostGet().then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -245,13 +240,12 @@ No authorization required
 import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.CardsApi();
-apiInstance.cardsPackagesGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.cardsPackagesGet().then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -290,13 +284,12 @@ token.apiKey = 'YOUR API KEY';
 //token.apiKeyPrefix = 'Token';
 
 let apiInstance = new Pokecoin.CardsApi();
-apiInstance.cardsUsercardsGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.cardsUsercardsGet().then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters

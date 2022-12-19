@@ -33,18 +33,11 @@ export default class ViewsApi {
     }
 
 
-    /**
-     * Callback function to receive the result of the viewsBlockchainGet operation.
-     * @callback module:api/ViewsApi~viewsBlockchainGetCallback
-     * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
-     * @param {String} response The complete HTTP response.
-     */
 
     /**
-     * @param {module:api/ViewsApi~viewsBlockchainGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
-    viewsBlockchainGet(callback) {
+    viewsBlockchainGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -63,22 +56,25 @@ export default class ViewsApi {
       return this.apiClient.callApi(
         '/views/blockchain', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the viewsDashboardGet operation.
-     * @callback module:api/ViewsApi~viewsDashboardGetCallback
-     * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
-     * @param {String} response The complete HTTP response.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
      */
+    viewsBlockchainGet() {
+      return this.viewsBlockchainGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
-     * @param {module:api/ViewsApi~viewsDashboardGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
-    viewsDashboardGet(callback) {
+    viewsDashboardGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -97,22 +93,25 @@ export default class ViewsApi {
       return this.apiClient.callApi(
         '/views/dashboard', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the viewsUsersGet operation.
-     * @callback module:api/ViewsApi~viewsUsersGetCallback
-     * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
-     * @param {String} response The complete HTTP response.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
      */
+    viewsDashboardGet() {
+      return this.viewsDashboardGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
-     * @param {module:api/ViewsApi~viewsUsersGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
-    viewsUsersGet(callback) {
+    viewsUsersGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -131,8 +130,18 @@ export default class ViewsApi {
       return this.apiClient.callApi(
         '/views/users', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
+    }
+
+    /**
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     */
+    viewsUsersGet() {
+      return this.viewsUsersGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 

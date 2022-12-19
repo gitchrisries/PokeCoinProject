@@ -18,7 +18,7 @@ onmessage = ({data: {previousHash, difficulty}}) => {
     let newBlock = ''
     let newHash = ''
 
-    console.log('Previous Hash in Worker: ',previousHash)
+    //console.log('Previous Hash in Worker: ',previousHash)
 
     while (nonce <= max) {
         nonce++
