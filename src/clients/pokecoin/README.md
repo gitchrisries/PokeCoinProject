@@ -111,14 +111,12 @@ var api = new Pokecoin.BlockchainApi()
 var opts = {
   'body': new Pokecoin.AddBlockBody() // {AddBlockBody} 
 };
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
-};
-api.blockchainBlocksPost(opts, callback);
+api.blockchainBlocksPost(opts).then(function(data) {
+  console.log('API called successfully. Returned data: ' + data);
+}, function(error) {
+  console.error(error);
+});
+
 
 ```
 

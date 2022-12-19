@@ -39,21 +39,13 @@ export default class BlockchainApi {
     }
 
 
-    /**
-     * Callback function to receive the result of the blockchainBlocksPost operation.
-     * @callback module:api/BlockchainApi~blockchainBlocksPostCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/AddBlockResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
 
     /**
      * @param {Object} opts Optional parameters
      * @param {module:model/AddBlockBody} opts.body 
-     * @param {module:api/BlockchainApi~blockchainBlocksPostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/AddBlockResponse}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/AddBlockResponse} and HTTP response
      */
-    blockchainBlocksPost(opts, callback) {
+    blockchainBlocksPostWithHttpInfo(opts) {
       opts = opts || {};
       let postBody = opts['body'];
 
@@ -73,23 +65,27 @@ export default class BlockchainApi {
       return this.apiClient.callApi(
         '/blockchain/blocks', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the blockchainCurrentDifficultyGet operation.
-     * @callback module:api/BlockchainApi~blockchainCurrentDifficultyGetCallback
-     * @param {String} error Error message, if any.
-     * @param {Number} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/AddBlockBody} opts.body 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/AddBlockResponse}
      */
+    blockchainBlocksPost(opts) {
+      return this.blockchainBlocksPostWithHttpInfo(opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
-     * @param {module:api/BlockchainApi~blockchainCurrentDifficultyGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Number}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Number} and HTTP response
      */
-    blockchainCurrentDifficultyGet(callback) {
+    blockchainCurrentDifficultyGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -108,23 +104,25 @@ export default class BlockchainApi {
       return this.apiClient.callApi(
         '/blockchain/currentDifficulty', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the blockchainLastBlockGet operation.
-     * @callback module:api/BlockchainApi~blockchainLastBlockGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/Block} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Number}
      */
+    blockchainCurrentDifficultyGet() {
+      return this.blockchainCurrentDifficultyGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
-     * @param {module:api/BlockchainApi~blockchainLastBlockGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/Block}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/Block} and HTTP response
      */
-    blockchainLastBlockGet(callback) {
+    blockchainLastBlockGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -143,8 +141,18 @@ export default class BlockchainApi {
       return this.apiClient.callApi(
         '/blockchain/lastBlock', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
+    }
+
+    /**
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/Block}
+     */
+    blockchainLastBlockGet() {
+      return this.blockchainLastBlockGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 

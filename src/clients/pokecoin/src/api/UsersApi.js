@@ -43,21 +43,13 @@ export default class UsersApi {
     }
 
 
-    /**
-     * Callback function to receive the result of the authChangePasswordPost operation.
-     * @callback module:api/UsersApi~authChangePasswordPostCallback
-     * @param {String} error Error message, if any.
-     * @param {Object} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
 
     /**
      * @param {Object} opts Optional parameters
      * @param {module:model/ChangePasswordBody} opts.body 
-     * @param {module:api/UsersApi~authChangePasswordPostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Object}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Object} and HTTP response
      */
-    authChangePasswordPost(opts, callback) {
+    authChangePasswordPostWithHttpInfo(opts) {
       opts = opts || {};
       let postBody = opts['body'];
 
@@ -77,25 +69,29 @@ export default class UsersApi {
       return this.apiClient.callApi(
         '/auth/changePassword', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the authLoginPost operation.
-     * @callback module:api/UsersApi~authLoginPostCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/LoginResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/ChangePasswordBody} opts.body 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Object}
      */
+    authChangePasswordPost(opts) {
+      return this.authChangePasswordPostWithHttpInfo(opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
      * @param {Object} opts Optional parameters
      * @param {module:model/LoginBody} opts.body 
-     * @param {module:api/UsersApi~authLoginPostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/LoginResponse}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/LoginResponse} and HTTP response
      */
-    authLoginPost(opts, callback) {
+    authLoginPostWithHttpInfo(opts) {
       opts = opts || {};
       let postBody = opts['body'];
 
@@ -115,23 +111,27 @@ export default class UsersApi {
       return this.apiClient.callApi(
         '/auth/login', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the authMeGet operation.
-     * @callback module:api/UsersApi~authMeGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/User} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/LoginBody} opts.body 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/LoginResponse}
      */
+    authLoginPost(opts) {
+      return this.authLoginPostWithHttpInfo(opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
-     * @param {module:api/UsersApi~authMeGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/User}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/User} and HTTP response
      */
-    authMeGet(callback) {
+    authMeGetWithHttpInfo() {
       let postBody = null;
 
       let pathParams = {
@@ -150,25 +150,27 @@ export default class UsersApi {
       return this.apiClient.callApi(
         '/auth/me', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Callback function to receive the result of the authRegisterPost operation.
-     * @callback module:api/UsersApi~authRegisterPostCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/RegisterResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/User}
      */
+    authMeGet() {
+      return this.authMeGetWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
 
     /**
      * @param {Object} opts Optional parameters
      * @param {module:model/RegisterBody} opts.body 
-     * @param {module:api/UsersApi~authRegisterPostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/RegisterResponse}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/RegisterResponse} and HTTP response
      */
-    authRegisterPost(opts, callback) {
+    authRegisterPostWithHttpInfo(opts) {
       opts = opts || {};
       let postBody = opts['body'];
 
@@ -188,8 +190,20 @@ export default class UsersApi {
       return this.apiClient.callApi(
         '/auth/register', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+        authNames, contentTypes, accepts, returnType, null
       );
+    }
+
+    /**
+     * @param {Object} opts Optional parameters
+     * @param {module:model/RegisterBody} opts.body 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/RegisterResponse}
+     */
+    authRegisterPost(opts) {
+      return this.authRegisterPostWithHttpInfo(opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 

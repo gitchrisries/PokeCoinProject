@@ -22,13 +22,12 @@ Method | HTTP request | Description
 import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.ViewsApi();
-apiInstance.viewsBlockchainGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully.');
-  }
+apiInstance.viewsBlockchainGet().then(() => {
+  console.log('API called successfully.');
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -61,13 +60,12 @@ No authorization required
 import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.ViewsApi();
-apiInstance.viewsDashboardGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully.');
-  }
+apiInstance.viewsDashboardGet().then(() => {
+  console.log('API called successfully.');
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
@@ -100,13 +98,12 @@ No authorization required
 import Pokecoin from 'pokecoin';
 
 let apiInstance = new Pokecoin.ViewsApi();
-apiInstance.viewsUsersGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully.');
-  }
+apiInstance.viewsUsersGet().then(() => {
+  console.log('API called successfully.');
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters

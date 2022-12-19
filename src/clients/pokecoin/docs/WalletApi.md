@@ -26,13 +26,12 @@ token.apiKey = 'YOUR API KEY';
 //token.apiKeyPrefix = 'Token';
 
 let apiInstance = new Pokecoin.WalletApi();
-apiInstance.walletBalanceGet((error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
+apiInstance.walletBalanceGet().then((data) => {
+  console.log('API called successfully. Returned data: ' + data);
+}, (error) => {
+  console.error(error);
 });
+
 ```
 
 ### Parameters
