@@ -1,7 +1,7 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useCallback, useContext, useEffect, useRef} from 'react'
 import {useStopwatch} from 'react-timer-hook';
 import {Box, Button} from '@chakra-ui/react'
-import {useMutation, useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {BlockchainApi, WalletApi} from "../clients/pokecoin/src";
 import ApiClient from "../clients/pokecoin/src/ApiClient";
 
@@ -9,31 +9,42 @@ const apiClient = new ApiClient("http://localhost:3000/")
 let token = apiClient.authentications['token']
 token.apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDU3NTE0LCJleHAiOjE2NzE1NDM5MTR9.dj1wDmDgBlLV9UwfeKdz_g7_zABhSL0kMGF3kRAquuQ'
 
+//TODO: Detect Route Change for MiningStatus
+// import { useEffect } from 'react';
+// import { useLocation } from 'react-router-dom';
+//
+// function SomeComponent() {
+//     const location = useLocation();
+//
+//     useEffect(() => {
+//         console.log('Location changed');
+//     }, [location]);
+//
+// ...
+// }
+
 
 const blockchainApi = new BlockchainApi(apiClient)
-const walletApi = new WalletApi(apiClient)
 
 let worker = null
 
-function MiningPage() {
+function MiningPage({inView}) {
     const [miningStatus, setMiningStatus] = React.useState(true)
+    const queryClient = useQueryClient()
+    const newHash = useRef('')
 
 
-    const {data: postedBlock, mutate} = useMutation(async (block) => {
-        return await blockchainApi.blockchainBlocksPost({body: block})
-    })
+    const {data: postedBlock, mutate} = useMutation(postBlock, {onSuccess: () => {
+        queryClient.invalidateQueries(['walletBalance']).catch(console.log)
+    }})
+
+    async function postBlock(block) {
+        if (miningStatus) return await blockchainApi.blockchainBlocksPost({body: block})
+    }
 
     const {data: lastBlock} = useQuery(['lastBlock', postedBlock],
         async () => {
             return await blockchainApi.blockchainLastBlockGet();
-        }
-    )
-
-    useQuery(['walletBalance', postedBlock],
-        async () => {
-            const response = await walletApi.walletBalanceGet()
-            localStorage.setItem('walletBalance', response.amount)
-            return response
         }
     )
 
@@ -42,8 +53,7 @@ function MiningPage() {
         worker.postMessage({previousHash: _prevHash, difficulty: 4})
 
         worker.onmessage = (message) => {
-            if (!miningStatus) return
-            localStorage.setItem('newHash', message.data.newHash)
+            newHash.current = message.data.newHash
             mutate(message.data.newBlock)
         }
     }
@@ -80,11 +90,10 @@ function MiningPage() {
                 textAlign: 'center',
                 borderRadius: 10,
                 padding: 10,
-                margin: '100px 400px 10px 400px'
+                margin: '0px 400px 10px 400px'
             }}>
                 <div>
-                    <p>Wallet Balance: {localStorage.getItem('walletBalance')}</p>
-                    {<p>Last hash found: {localStorage.getItem('newHash')}</p>}
+                    {<p>Last hash found: {newHash.current}</p>}
                     {miningStatus ? <p>miningStatus: Running</p> : <p>miningStatus: Stopped</p>}
                     <Stopwatch/>
                 </div>
