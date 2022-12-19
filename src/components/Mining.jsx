@@ -1,27 +1,27 @@
-import React, {useEffect} from 'react'
+import React, {useContext, useEffect} from 'react'
 import {useStopwatch} from 'react-timer-hook';
 import {Box, Button} from '@chakra-ui/react'
 import {useMutation, useQuery} from "@tanstack/react-query";
-import ApiClient from "../clients/pokecoin/src/ApiClient";
 import {BlockchainApi, WalletApi} from "../clients/pokecoin/src";
-
+import ApiClient from "../clients/pokecoin/src/ApiClient";
 
 const apiClient = new ApiClient("http://localhost:3000/")
 let token = apiClient.authentications['token']
 token.apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDU3NTE0LCJleHAiOjE2NzE1NDM5MTR9.dj1wDmDgBlLV9UwfeKdz_g7_zABhSL0kMGF3kRAquuQ'
 
-const blockchainApi = new BlockchainApi(apiClient);
-const walletApi = new WalletApi(apiClient);
+
+const blockchainApi = new BlockchainApi(apiClient)
+const walletApi = new WalletApi(apiClient)
 
 let worker = null
 
 function MiningPage() {
     const [miningStatus, setMiningStatus] = React.useState(true)
 
-    const {data: postedBlock, mutate} = useMutation(postNewBlock)
-    async function postNewBlock (block) {
+
+    const {data: postedBlock, mutate} = useMutation(async (block) => {
         return await blockchainApi.blockchainBlocksPost({body: block})
-    }
+    })
 
     const {data: lastBlock} = useQuery(['lastBlock', postedBlock],
         async () => {
@@ -83,7 +83,7 @@ function MiningPage() {
                 margin: '100px 400px 10px 400px'
             }}>
                 <div>
-                    Wallet Balance: {localStorage.getItem('walletBalance')}
+                    <p>Wallet Balance: {localStorage.getItem('walletBalance')}</p>
                     {<p>Last hash found: {localStorage.getItem('newHash')}</p>}
                     {miningStatus ? <p>miningStatus: Running</p> : <p>miningStatus: Stopped</p>}
                     <Stopwatch/>
