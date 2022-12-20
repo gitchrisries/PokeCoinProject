@@ -29,7 +29,7 @@ async function postNewBlock(block) {
 }
 
 async function getWalletBalance() {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDQwOTgyLCJleHAiOjE2NzE1MjczODJ9.1_erFw6bSCNk8DM9rc4lC1NPhX3Fl2A5IVppQvjbVK0"
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhhbnMiLCJpYXQiOjE2NzE1NTE1MzEsImV4cCI6MTY3MTYzNzkzMX0.WILLQAh7CmWLDhMEZ-eumb8jKTFEbCacnzP7ja43Mzw"
 
     const requestOptions = {
         method: 'GET',
@@ -80,7 +80,7 @@ function MiningPage() {
 
     async function runMining() {
         const _prevHash = data.hash
-        worker.postMessage({previousHash: _prevHash, difficulty: 4})
+        worker.postMessage({previousHash: _prevHash, difficulty: 6})
 
         worker.onmessage = (message) => {
             if (!miningStatus) return
