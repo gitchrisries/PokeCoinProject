@@ -1,8 +1,8 @@
-import React, {useCallback, useContext, useEffect, useRef} from 'react'
+import React, {useEffect, useRef} from 'react'
 import {useStopwatch} from 'react-timer-hook';
 import {Box, Button} from '@chakra-ui/react'
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {BlockchainApi, WalletApi} from "../clients/pokecoin/src";
+import {BlockchainApi} from "../clients/pokecoin/src";
 import ApiClient from "../clients/pokecoin/src/ApiClient";
 
 const apiClient = new ApiClient("http://localhost:3000/")
@@ -28,13 +28,13 @@ const blockchainApi = new BlockchainApi(apiClient)
 
 let worker = null
 
-function MiningPage({inView}) {
+function MiningPage() {
     const [miningStatus, setMiningStatus] = React.useState(true)
     const queryClient = useQueryClient()
     const newHash = useRef('')
 
-
-    const {data: postedBlock, mutate} = useMutation(postBlock, {onSuccess: () => {
+    const {data: postedBlock, mutate} = useMutation(postBlock,
+        {onSuccess: () => {
         queryClient.invalidateQueries(['walletBalance']).catch(console.log)
     }})
 
@@ -49,8 +49,7 @@ function MiningPage({inView}) {
     )
 
     async function runMining() {
-        const _prevHash = lastBlock.hash
-        worker.postMessage({previousHash: _prevHash, difficulty: 4})
+        worker.postMessage({previousHash: lastBlock.hash, difficulty: 4})
 
         worker.onmessage = (message) => {
             newHash.current = message.data.newHash

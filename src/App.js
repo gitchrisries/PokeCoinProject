@@ -1,23 +1,19 @@
 import MiningPage from "./components/Mining";
 import BuyPackagePage from "./components/BuyPackagePage";
 import {
-    Badge,
     Box,
-    Card,
-    CardBody, Center,
+    Center,
     Flex,
-    HStack, Spacer,
+    Spacer,
     Tab,
     TabList,
-    TabPanel,
-    TabPanels,
     Tabs,
     Text
 } from "@chakra-ui/react";
-import {useRef, useState} from "react";
+import {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {ApiClient, WalletApi} from "./clients/pokecoin/src";
-import {HoverHandlers} from "framer-motion";
+
 
 const apiClient = new ApiClient("http://localhost:3000/")
 let token = apiClient.authentications['token']
@@ -32,8 +28,7 @@ function App() {
             const response = await walletApi.walletBalanceGet()
             localStorage.setItem('walletBalance', response.amount)
             return response
-        }
-    )
+        })
 
     document.body.style.backgroundColor = '#263040';
 
