@@ -14,10 +14,11 @@ import {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {ApiClient, WalletApi} from "./clients/pokecoin/src";
 
+localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNjM1OTA0LCJleHAiOjE2NzE3MjIzMDR9.RJVvFmmTaFLepEU__KMFdMJQ7L2WzWOv5003fVXesKQ')
 
 const apiClient = new ApiClient("http://localhost:3000/")
 let token = apiClient.authentications['token']
-token.apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDU3NTE0LCJleHAiOjE2NzE1NDM5MTR9.dj1wDmDgBlLV9UwfeKdz_g7_zABhSL0kMGF3kRAquuQ'
+token.apiKey = localStorage.getItem('token')
 const walletApi = new WalletApi(apiClient)
 
 function App() {

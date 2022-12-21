@@ -16,7 +16,7 @@ import {CardsApi} from "../clients/pokecoin/src";
 
 const apiClient = new ApiClient("http://localhost:3000/")
 let token = apiClient.authentications['token']
-token.apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDU3NTE0LCJleHAiOjE2NzE1NDM5MTR9.dj1wDmDgBlLV9UwfeKdz_g7_zABhSL0kMGF3kRAquuQ'
+token.apiKey = localStorage.getItem('token')
 
 const cardApi = new CardsApi(apiClient)
 
