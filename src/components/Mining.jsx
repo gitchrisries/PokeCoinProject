@@ -9,7 +9,7 @@ const apiClient = new ApiClient("http://localhost:3000/")
 let token = apiClient.authentications['token']
 token.apiKey = localStorage.getItem('token')
 
-//TODO: Detect Route Change for MiningStatus
+// TODO: Detect Route Change for MiningStatus
 // import { useEffect } from 'react';
 // import { useLocation } from 'react-router-dom';
 //
@@ -31,6 +31,7 @@ let worker = null
 function MiningPage() {
     const [miningStatus, setMiningStatus] = React.useState(true)
     const queryClient = useQueryClient()
+    //Updated manchmal nicht nach tab-wechsel ??
     const newHash = useRef('')
 
     const {data: postedBlock, mutate} = useMutation(postBlock,
