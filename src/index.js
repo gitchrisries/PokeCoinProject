@@ -13,11 +13,11 @@ const queryClient = new QueryClient();
 root.render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <ChakraProvider>
-                <MantineProvider theme={{colorScheme: 'dark'}}>
+            <MantineProvider theme={{colorScheme: 'dark'}}>
+                <ChakraProvider>
                     <App/>
-                </MantineProvider>
-            </ChakraProvider>
+                </ChakraProvider>
+            </MantineProvider>
         </QueryClientProvider>
     </React.StrictMode>
 );

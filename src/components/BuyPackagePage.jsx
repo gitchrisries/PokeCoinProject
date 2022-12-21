@@ -1,46 +1,59 @@
 import {
+    Box,
     Button,
     HStack,
     NumberDecrementStepper, NumberIncrementStepper,
     NumberInput,
     NumberInputField,
-    NumberInputStepper,
-    Text
+    NumberInputStepper, ScaleFade,
+    Text, useDisclosure, VStack
 } from "@chakra-ui/react";
-import React, {useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import ApiClient from "../clients/pokecoin/src/ApiClient";
-import {CardsApi, WalletApi} from "../clients/pokecoin/src";
+import {CardsApi} from "../clients/pokecoin/src";
+
 
 const apiClient = new ApiClient("http://localhost:3000/")
 let token = apiClient.authentications['token']
-token.apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDU3NTE0LCJleHAiOjE2NzE1NDM5MTR9.dj1wDmDgBlLV9UwfeKdz_g7_zABhSL0kMGF3kRAquuQ'
+token.apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhhbnMiLCJpYXQiOjE2NzE1NTE1MzEsImV4cCI6MTY3MTYzNzkzMX0.WILLQAh7CmWLDhMEZ-eumb8jKTFEbCacnzP7ja43Mzw'
 
 const cardApi = new CardsApi(apiClient)
 
 
 function BuyPackagePage() {
     const amount = useRef(1)
+    const message = {success: `Success! ${amount.current} Package(s) bought.`, error: 'Failed. Not enough Coins.'}
     const queryClient = useQueryClient()
+    const {isOpen, onToggle} = useDisclosure()
+    const [isError ,setIsError] = useState(false)
 
+    //Nur einmal?
     const {data: availablePackages} = useQuery(['package'],
         async () => {
             return await cardApi.cardsPackagesGet() //Array
         })
 
-    const {mutate, isSuccess} = useMutation(buyPackage, {onSuccess: () => {
+    //Error catchen?
+    const {mutate} = useMutation(buyPackage, {
+        onSuccess: () => {
             queryClient.invalidateQueries(['walletBalance']).catch(console.log)
-        }})
+            setIsError(false)
+            onToggle()
+        },
+        onError: () => {
+            onToggle()
+        }
+    })
 
     async function buyPackage(packageName) {
-        const response = await cardApi.cardsPackagesCardPackNameBuyDefaultPackageGet(packageName)
-        console.log(response)
-        return response
+        return await cardApi.cardsPackagesCardPackNameBuyDefaultPackageGet(packageName)
     }
 
     function handleClick() {
         if ((amount.current * 25) > localStorage.getItem('walletBalance')) {
-            console.log('Not enough Coins')
+            setIsError(true)
+            onToggle()
             return
         }
         for (let i = 0; i < amount.current; i++) {
@@ -48,19 +61,43 @@ function BuyPackagePage() {
         }
     }
 
+    useEffect(() => {
+        if (isOpen) {
+            let timer1 = setTimeout(() => onToggle(), 1000)
+
+            return () => {
+                clearTimeout(timer1)
+            };
+        }
+    }, [isOpen])
+
+
     return (
-        <HStack>
-            <Text color='whitesmoke'>Amount</Text>
-            <NumberInput focusInputOnChange={false} defaultValue={1} min={1} max={10} width='20' onChange={(value) => amount.current = value}>
-                <NumberInputField borderWidth='3px' bg='gray'  color='whitesmoke'>
-                </NumberInputField>
-                <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                </NumberInputStepper>
-            </NumberInput>
-            <Button colorScheme={'blue'} onClick={() => handleClick()}>Buy Package(s)</Button>
-        </HStack>
+        <>
+            <VStack spacing={100}>
+                <Box borderRadius='lg' color='white' bg='#224173FF' p={2} borderWidth='2px'>
+                    <HStack>
+                        <Text color='whitesmoke' fontWeight='bold'>Amount</Text>
+                        <NumberInput focusInputOnChange={false} defaultValue={1} min={1} max={10} width='20'
+                                     onChange={(value) => amount.current = value}>
+                            <NumberInputField borderWidth='3px' bg='gray' color='whitesmoke'>
+                            </NumberInputField>
+                            <NumberInputStepper>
+                                <NumberIncrementStepper/>
+                                <NumberDecrementStepper/>
+                            </NumberInputStepper>
+                        </NumberInput>
+                        <Button isDisabled={isOpen} colorScheme={'blue'} onClick={() => handleClick()}>Buy
+                            Package(s)</Button>
+                    </HStack>
+                </Box>
+                <ScaleFade initialScale={0.9} in={isOpen} transition={{enter: {duration: 0.6}, exit: {duration: 0.4}}}>
+                    <Box borderRadius='lg' color='white' bg= {isError ? 'red' : 'teal'} p={2} borderWidth='2px'>
+                        <Text fontWeight='bold'>{isError ? message.error : message.success}</Text>
+                    </Box>
+                </ScaleFade>
+            </VStack>
+        </>
     )
 }
 
