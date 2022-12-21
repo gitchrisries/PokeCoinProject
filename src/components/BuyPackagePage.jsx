@@ -20,7 +20,7 @@ function BuyPackagePage() {
     const message = {success: `Success! ${amount.current} Package(s) bought.`, error: 'Failed. Not enough Coins.'}
     const queryClient = useQueryClient()
     const {isOpen, onToggle} = useDisclosure()
-    const [isError ,setIsError] = useState(false)
+    const [isError, setIsError] = useState(false)
 
     //Nur einmal?
     const {data: availablePackages} = useQuery(['package'],
@@ -65,33 +65,31 @@ function BuyPackagePage() {
         }
     }, [isOpen])
 
-
     return (
-        <>
-            <VStack spacing={100}>
-                <Box borderRadius='lg' color='white' bg='#224173FF' p={2} borderWidth='2px'>
-                    <HStack>
-                        <Text color='whitesmoke' fontWeight='bold'>Amount</Text>
-                        <NumberInput focusInputOnChange={false} defaultValue={1} min={1} max={10} width='20'
-                                     onChange={(value) => amount.current = value}>
-                            <NumberInputField borderWidth='3px' bg='gray' color='whitesmoke'>
-                            </NumberInputField>
-                            <NumberInputStepper>
-                                <NumberIncrementStepper/>
-                                <NumberDecrementStepper/>
-                            </NumberInputStepper>
-                        </NumberInput>
-                        <Button isDisabled={isOpen} colorScheme={'blue'} onClick={() => handleClick()}>Buy
-                            Package(s)</Button>
-                    </HStack>
+        <VStack spacing={100}>
+            <Box borderRadius='lg' color='white' bg='#224173FF' p={2} borderWidth='2px'>
+                <HStack>
+                    <Text color='whitesmoke' fontWeight='bold'>Amount</Text>
+                    <NumberInput focusInputOnChange={false} defaultValue={1} min={1} max={10} width='20'
+                                 onChange={(value) => amount.current = value}>
+                        <NumberInputField borderWidth='3px' bg='gray' color='whitesmoke'>
+                        </NumberInputField>
+                        <NumberInputStepper>
+                            <NumberIncrementStepper/>
+                            <NumberDecrementStepper/>
+                        </NumberInputStepper>
+                    </NumberInput>
+                    <Button isDisabled={isOpen} colorScheme={'blue'} onClick={() => handleClick()}>
+                        Buy Package(s)
+                    </Button>
+                </HStack>
+            </Box>
+            <ScaleFade initialScale={0.9} in={isOpen} transition={{enter: {duration: 0.6}, exit: {duration: 0.4}}}>
+                <Box borderRadius='lg' color='white' bg={isError ? 'red' : 'teal'} p={2} borderWidth='2px'>
+                    <Text fontWeight='bold'>{isError ? message.error : message.success}</Text>
                 </Box>
-                <ScaleFade initialScale={0.9} in={isOpen} transition={{enter: {duration: 0.6}, exit: {duration: 0.4}}}>
-                    <Box borderRadius='lg' color='white' bg= {isError ? 'red' : 'teal'} p={2} borderWidth='2px'>
-                        <Text fontWeight='bold'>{isError ? message.error : message.success}</Text>
-                    </Box>
-                </ScaleFade>
-            </VStack>
-        </>
+            </ScaleFade>
+        </VStack>
     )
 }
 

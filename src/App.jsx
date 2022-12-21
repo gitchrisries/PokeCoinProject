@@ -10,7 +10,7 @@ import {
     useMantineTheme, Image,
     Button
 } from '@mantine/core';
-import {ApiClient, WalletApi} from "./clients/pokecoin/src";
+import {WalletApi} from "./clients/pokecoin/src";
 import {useQuery} from "@tanstack/react-query";
 import {
     BrowserRouter as Router,
@@ -24,6 +24,7 @@ import logo from './images/pokecoins_lable.png'
 import BuyPackagePage from "./components/BuyPackagePage";
 import React from "react";
 import _apiClient from "./helpers/globals";
+import {Box} from "@chakra-ui/react";
 
 const walletApi = new WalletApi(_apiClient)
 
@@ -43,7 +44,7 @@ function App() {
             <AppShell
                 styles={{
                     main: {
-                        background: theme.colorScheme === 'light' ? theme.colors.dark[8] : theme.colors.gray[0],
+                        background: theme.colorScheme === 'dark' ? '#20252f' : theme.colors.gray[0],
                     },
                 }}
                 navbarOffsetBreakpoint="sm"
@@ -75,9 +76,14 @@ function App() {
                             </MediaQuery>
 
                             <Image src={logo} alt='PokeCoins' c='white' width='150px'/>
-                            <div style={{background: 'green', borderRadius: '5px'}}>
-                                <Text mt='6px' fw={600}>Balance: {walletBalance?.amount}</Text>
-                            </div>
+                            <Box width='200px' bg='#0398fc' style={{
+                                    textAlign: 'center',
+                                    borderRadius: 6,
+                                    paddingTop: 1,
+                                    marginLeft: 10
+                                }}>
+                                <Text color='white' mt='6px' fw={600}>Wallet Balance: {walletBalance?.amount}</Text>
+                            </Box>
                         </div>
                         <div style={{display: 'flex', alignItems: 'center', height: '100%'}}>
                         </div>

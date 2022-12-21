@@ -10,7 +10,7 @@ const calculateHash = (block) => {
     return SHA256(information).toString()
 }
 
-onmessage = ({data: {previousHash, difficulty}}) => {
+onmessage = ({data: {previousHash, difficulty, string}}) => {
     let nonce = 0
     let timestamp = Date.now()
     const max = Number.MAX_SAFE_INTEGER
@@ -23,7 +23,7 @@ onmessage = ({data: {previousHash, difficulty}}) => {
         newBlock = {
             previousHash,
             timestamp,
-            data: 'ABC',
+            data: string,
             nonce
         }
 

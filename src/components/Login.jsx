@@ -1,7 +1,8 @@
 import React, {useState, createContext, useContext} from "react";
 import {Box, Input, HStack, VStack, InputGroup, InputLeftAddon, Button} from '@chakra-ui/react'
+import _apiClient from "../helpers/globals";
 
-const url = 'http://localhost:3000'
+const url = 'https://webeng.mi.hs-rm.de/'
 const UserContext = createContext({});
 
 function RegisterLoginButton({path,name}) {
@@ -16,8 +17,14 @@ function RegisterLoginButton({path,name}) {
             body: JSON.stringify(loginData)
         }
         fetch(`${url}${path}`, requestOptions)
-            .then(response => response.text())
-            .then(result => console.log(result))
+            .then(response => response.json())
+            .then(result => {
+                console.log(result.token)
+                if (result.token) {
+                    let token = _apiClient.authentications['token']
+                    token.apiKey = result.token
+                }
+            })
             .catch(error => console.log('error', error));
 
     });
@@ -44,11 +51,11 @@ function Login() {
                 </Box>
                 <InputGroup>
                     <InputLeftAddon children='Username' width='35%'/>
-                    <Input type='text' value={loginData.username} onChange={onChangeUserName}/>
+                    <Input color='white' type='text' value={loginData.username} onChange={onChangeUserName}/>
                 </InputGroup>
                 <InputGroup>
                     <InputLeftAddon children='Password' width='35%'/>
-                    <Input type='password' value={loginData.password} onChange={onChangePassword}/>
+                    <Input color='white' type='password' value={loginData.password} onChange={onChangePassword}/>
                 </InputGroup>
                 <HStack>
                     <RegisterLoginButton path={'/auth/login'} name={'Login'}/>
