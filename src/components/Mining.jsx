@@ -3,29 +3,9 @@ import {useStopwatch} from 'react-timer-hook';
 import {Box, Button} from '@chakra-ui/react'
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {BlockchainApi} from "../clients/pokecoin/src";
-import ApiClient from "../clients/pokecoin/src/ApiClient";
+import _apiClient from "../helpers/globals";
 
-const apiClient = new ApiClient("http://localhost:3000/")
-let token = apiClient.authentications['token']
-token.apiKey = localStorage.getItem('token')
-
-// TODO: Detect Route Change for MiningStatus
-// import { useEffect } from 'react';
-// import { useLocation } from 'react-router-dom';
-//
-// function SomeComponent() {
-//     const location = useLocation();
-//
-//     useEffect(() => {
-//         console.log('Location changed');
-//     }, [location]);
-//
-// ...
-// }
-
-
-const blockchainApi = new BlockchainApi(apiClient)
-
+const blockchainApi = new BlockchainApi(_apiClient)
 let worker = null
 
 function MiningPage() {
@@ -64,7 +44,12 @@ function MiningPage() {
         } else {
             setMiningStatus(true)
         }
-    });
+    })
+
+    //terminate worker when component dismounts
+    useEffect(() => {
+        return () => worker?.terminate()
+    }, [])
 
     useEffect(() => {
         worker?.terminate()
@@ -76,7 +61,7 @@ function MiningPage() {
 
     function Stopwatch() {
         const {seconds} = useStopwatch({autoStart: true});
-
+        //TODO: Resettet nach 60 sec
         return (
             <div style={{fontSize: '20px', marginBottom: 5}}>
                 Mining time: {miningStatus && seconds + 's'}

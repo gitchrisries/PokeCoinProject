@@ -10,19 +10,12 @@ import {
 } from "@chakra-ui/react";
 import React, {useEffect, useRef, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import ApiClient from "../clients/pokecoin/src/ApiClient";
 import {CardsApi} from "../clients/pokecoin/src";
+import _apiClient from "../helpers/globals";
 
-
-const apiClient = new ApiClient("http://localhost:3000/")
-let token = apiClient.authentications['token']
-token.apiKey = localStorage.getItem('token')
-
-const cardApi = new CardsApi(apiClient)
-
+const cardApi = new CardsApi(_apiClient)
 
 function BuyPackagePage() {
-
     const amount = useRef(1)
     const message = {success: `Success! ${amount.current} Package(s) bought.`, error: 'Failed. Not enough Coins.'}
     const queryClient = useQueryClient()
