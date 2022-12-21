@@ -1,92 +1,59 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useRef} from 'react'
 import {useStopwatch} from 'react-timer-hook';
 import {Box, Button} from '@chakra-ui/react'
-import {useQuery} from "@tanstack/react-query";
-import ApiClient from "../clients/pokecoin/src/ApiClient";
-import CardsApi from "../clients/pokecoin/src/api/CardsApi";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {BlockchainApi} from "../clients/pokecoin/src";
+import ApiClient from "../clients/pokecoin/src/ApiClient";
+
+const apiClient = new ApiClient("http://localhost:3000/")
+let token = apiClient.authentications['token']
+token.apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDU3NTE0LCJleHAiOjE2NzE1NDM5MTR9.dj1wDmDgBlLV9UwfeKdz_g7_zABhSL0kMGF3kRAquuQ'
+
+//TODO: Detect Route Change for MiningStatus
+// import { useEffect } from 'react';
+// import { useLocation } from 'react-router-dom';
+//
+// function SomeComponent() {
+//     const location = useLocation();
+//
+//     useEffect(() => {
+//         console.log('Location changed');
+//     }, [location]);
+//
+// ...
+// }
 
 
-async function postNewBlock(block) {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDQwOTgyLCJleHAiOjE2NzE1MjczODJ9.1_erFw6bSCNk8DM9rc4lC1NPhX3Fl2A5IVppQvjbVK0"
-
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'token': token
-        },
-        body: JSON.stringify(block)
-    }
-
-    //console.log('block:', JSON.stringify(block))
-
-    try {
-        return await fetch('http://localhost:3000/blockchain/blocks', requestOptions)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-async function getWalletBalance() {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNocmlzIiwiaWF0IjoxNjcxNDQwOTgyLCJleHAiOjE2NzE1MjczODJ9.1_erFw6bSCNk8DM9rc4lC1NPhX3Fl2A5IVppQvjbVK0"
-
-    const requestOptions = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'token': token
-        }
-    }
-
-    try {
-        return (await fetch('http://localhost:3000/wallet/balance', requestOptions)).json()
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-function WalletBalance() {
-    const [walletBalance, setWalletBalance] = React.useState(0)
-
-    async function getBalance() {
-        let newBalance = (await getWalletBalance()).amount
-        setWalletBalance(newBalance)
-    }
-
-    getBalance().catch(console.log)
-
-    return (
-        <div>Wallet Balance: {walletBalance}</div>
-    )
-}
-
+const blockchainApi = new BlockchainApi(apiClient)
 
 let worker = null
 
 function MiningPage() {
-    const [newHash, setNewHash] = React.useState('')
     const [miningStatus, setMiningStatus] = React.useState(true)
+    const queryClient = useQueryClient()
+    const newHash = useRef('')
 
-    const {data} = useQuery(['lastBlock', newHash],
+    const {data: postedBlock, mutate} = useMutation(postBlock,
+        {onSuccess: () => {
+        queryClient.invalidateQueries(['walletBalance']).catch(console.log)
+    }})
+
+    async function postBlock(block) {
+        if (miningStatus) return await blockchainApi.blockchainBlocksPost({body: block})
+    }
+
+    const {data: lastBlock} = useQuery(['lastBlock', postedBlock],
         async () => {
-            const apiClient = new ApiClient("http://localhost:3000/");
-            const blockchainApi = new BlockchainApi(apiClient);
-            const response = await blockchainApi.blockchainLastBlockGet();
-            return response
+            return await blockchainApi.blockchainLastBlockGet();
         }
     )
 
-
     async function runMining() {
-        const _prevHash = data.hash
-        worker.postMessage({previousHash: _prevHash, difficulty: 4})
+        worker.postMessage({previousHash: lastBlock.hash, difficulty: 4})
 
         worker.onmessage = (message) => {
-            if (!miningStatus) return
-            postNewBlock(message.data.newBlock).then(() => {
-                setNewHash(message.data.newHash)
-            })
+            newHash.current = message.data.newHash
+            mutate(message.data.newBlock)
         }
     }
 
@@ -100,11 +67,11 @@ function MiningPage() {
 
     useEffect(() => {
         worker?.terminate()
-        if (miningStatus && data) {
+        if (miningStatus && lastBlock) {
             worker = new Worker(new URL('../helpers/worker.js', import.meta.url));
             runMining().catch(console.log)
         }
-    }, [miningStatus, data])
+    }, [miningStatus, lastBlock])
 
     function Stopwatch() {
         const {seconds} = useStopwatch({autoStart: true});
@@ -122,11 +89,10 @@ function MiningPage() {
                 textAlign: 'center',
                 borderRadius: 10,
                 padding: 10,
-                margin: '100px 400px 10px 400px'
+                margin: '0px 400px 10px 400px'
             }}>
                 <div>
-                    <WalletBalance/>
-                    {newHash && <p>Last hash found: {newHash}</p>}
+                    {<p>Last hash found: {newHash.current}</p>}
                     {miningStatus ? <p>miningStatus: Running</p> : <p>miningStatus: Stopped</p>}
                     <Stopwatch/>
                 </div>

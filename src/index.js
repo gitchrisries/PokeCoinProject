@@ -1,4 +1,4 @@
-import React from "react";
+import React, {createContext} from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -11,11 +11,11 @@ const queryClient = new QueryClient();
 
 root.render(
     <React.StrictMode>
-        <QueryClientProvider client={queryClient}>
-            <ChakraProvider>
-                <App/>
-            </ChakraProvider>
-        </QueryClientProvider>
+            <QueryClientProvider client={queryClient}>
+                <ChakraProvider>
+                    <App/>
+                </ChakraProvider>
+            </QueryClientProvider>
     </React.StrictMode>
 );
 

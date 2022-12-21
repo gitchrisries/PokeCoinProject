@@ -7,7 +7,6 @@ const calculateHash = (block) => {
         block.data +
         block.nonce.toString()
     )
-
     return SHA256(information).toString()
 }
 
@@ -17,8 +16,6 @@ onmessage = ({data: {previousHash, difficulty}}) => {
     const max = Number.MAX_SAFE_INTEGER
     let newBlock = ''
     let newHash = ''
-
-    //console.log('Previous Hash in Worker: ',previousHash)
 
     while (nonce <= max) {
         nonce++
