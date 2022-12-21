@@ -22,6 +22,7 @@ const cardApi = new CardsApi(apiClient)
 
 
 function BuyPackagePage() {
+
     const amount = useRef(1)
     const message = {success: `Success! ${amount.current} Package(s) bought.`, error: 'Failed. Not enough Coins.'}
     const queryClient = useQueryClient()
