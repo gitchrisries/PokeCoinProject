@@ -73,7 +73,7 @@ function MiningPage() {
 
     useEffect(() => {
         workerList.current.forEach(worker => worker?.terminate())
-        if (miningStatus) {
+        if (miningStatus && lastBlock && difficulty) {
             for (let i = 0; i < workerAmount; i++) {
                 workerList.current[i] = new Worker(new URL('../helpers/worker.js', import.meta.url))
             }
