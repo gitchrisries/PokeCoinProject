@@ -11,15 +11,11 @@ const calculateHash = (block) => {
 }
 
 onmessage = ({data: {previousHash, difficulty}}) => {
-    let nonce = 0
     let timestamp = Date.now()
-    const max = Number.MAX_SAFE_INTEGER
     let newBlock = ''
     let newHash = ''
 
-    while (nonce <= max) {
-        nonce++
-
+    for (let nonce = 0; nonce <= Number.MAX_SAFE_INTEGER; nonce++) {
         newBlock = {
             previousHash,
             timestamp,
@@ -27,16 +23,16 @@ onmessage = ({data: {previousHash, difficulty}}) => {
             nonce
         }
 
-        if (nonce === max) {
+        if (nonce === Number.MAX_SAFE_INTEGER) {
             nonce = 0
             timestamp = Date.now()
         }
 
         newHash = calculateHash(newBlock)
-
         if (newHash.startsWith(Array(difficulty).fill(0).join(''))) {
             postMessage({newBlock, newHash})
             return
         }
+
     }
 }

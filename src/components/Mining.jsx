@@ -18,19 +18,87 @@ import stoppedGif from '../images/mining_stopped.gif'
 const blockchainApi = new BlockchainApi(_apiClient)
 const maxThreads = window.navigator.hardwareConcurrency
 
+const WorkerComp = React.memo(({workerAmount, setWorkerAmount}) => {
+    const [workerNumber, setWorkerNumber] = React.useState(1)
+
+    return (
+        <Box width='200px' bg='#1f1f1f' borderWidth='2px' marginTop={3}
+             borderColor='white' borderRadius='10' padding={'3'}>
+            <Text marginBottom='5' color='white'>Set Amount of Workers</Text>
+            <Center>
+                <HStack paddingBottom={'2'}>
+                    <NumberInput focusInputOnChange={false} defaultValue={workerAmount} min={1} max={maxThreads}
+                                 width='20'
+                                 onChange={(value) => setWorkerNumber(value)}>
+                        <NumberInputField borderWidth='3px' bg='gray' color='white'>
+                        </NumberInputField>
+                        <NumberInputStepper>
+                            <NumberIncrementStepper/>
+                            <NumberDecrementStepper/>
+                        </NumberInputStepper>
+                    </NumberInput>
+                    <Button colorScheme='blue' isDisabled={workerNumber === workerAmount}
+                            onClick={() => setWorkerAmount(workerNumber)}>Apply</Button>
+                </HStack>
+            </Center>
+        </Box>
+    )
+})
+
+const Pikachu = React.memo(({miningStatus}) => {
+    return (
+        <Box borderColor='#1f1f1f' borderWidth='2px' width={200} bg='white' style={{
+            textAlign: 'center',
+            borderRadius: 10,
+            padding: '10px 10px 10px 12px',
+            margin: '10px 100px 5px 100px'
+        }}>
+            <img src={miningStatus ? runningGif : stoppedGif}
+                 alt={miningStatus ? 'miningRunning' : 'miningStopped'}/>
+        </Box>
+    )
+})
+
+const MiningInfo = React.memo(({miningStatus, setMiningStatus, newHash}) => {
+
+    function Stopwatch() {
+        const {minutes, seconds} = useStopwatch({autoStart: true})
+        return (
+            miningStatus && <Text color='white'>Mining time: {minutes}:{(seconds < 10) && '0'}{seconds}</Text>
+        )
+    }
+
+    return (
+        <>
+            <Box bg='#1f1f1f' borderWidth='2px' borderColor='white' style={{
+                textAlign: 'center',
+                borderRadius: 10,
+                padding: 10,
+                margin: '10px 100px 10px 100px',
+            }}>
+                <Text color='white'>Last hash found: {newHash}</Text>
+                <Text color='white'>miningStatus: {miningStatus ? 'Running' : 'Stopped'}</Text>
+                <Stopwatch/>
+            </Box>
+            <Center>
+                <Button colorScheme={'blue'} onClick={() => setMiningStatus(!miningStatus)}>RUN/STOP</Button>
+            </Center>
+        </>
+    )
+})
+
 function MiningPage() {
     const [miningStatus, setMiningStatus] = React.useState(true)
+    const [workerAmount, setWorkerAmount] = React.useState(1)
     const queryClient = useQueryClient()
     const newHash = useRef('')
-    const [workerAmount, setWorkerAmount] = React.useState(1)
-    const workerNumber = useRef(workerAmount)
     const workerList = useRef(Array(workerAmount).fill(null))
 
     const {data: postedBlock, mutate} = useMutation(postBlock, {
-            onSuccess: () => {
-                queryClient.invalidateQueries(['walletBalance']).catch(console.log)
-            }
-        })
+        onSuccess: () => {
+            queryClient.invalidateQueries(['walletBalance']).catch(console.log)
+        }
+    })
 
     async function postBlock(block) {
         if (miningStatus) return await blockchainApi.blockchainBlocksPost({body: block})
@@ -38,7 +106,7 @@ function MiningPage() {
 
     const {data: lastBlock} = useQuery(['lastBlock', postedBlock],
         async () => {
-            return await blockchainApi.blockchainLastBlockGet();
+            return await blockchainApi.blockchainLastBlockGet()
         }
     )
 
@@ -79,64 +147,19 @@ function MiningPage() {
             }
             runMining().catch(console.log)
         }
-    }, [miningStatus, lastBlock, workerAmount])
-
-    function Stopwatch() {
-        const {minutes, seconds} = useStopwatch({autoStart: true})
-        return (
-            miningStatus && <Text color='white'>Mining time: {minutes}:{(seconds < 10) && '0'}{seconds}</Text>
-        )
-    }
+    }, [miningStatus, lastBlock, workerAmount, difficulty])
 
     return (
-        <div style={{textAlign: 'center'}}>
+        <>
             <Center>
-                <Box borderColor='#1f1f1f' borderWidth='2px' width={200} bg='white' style={{
-                    textAlign: 'center',
-                    borderRadius: 10,
-                    padding: '10px 10px 10px 12px',
-                    margin: '10px 100px 5px 100px'
-                }}>
-                    <img src={miningStatus ? runningGif : stoppedGif}
-                         alt={miningStatus ? 'miningRunning' : 'miningStopped'}/>
-                </Box>
+                <Pikachu miningStatus={miningStatus}/>
             </Center>
-            <Box bg='#1f1f1f' borderWidth='2px' borderColor='white' style={{
-                textAlign: 'center',
-                borderRadius: 10,
-                padding: 10,
-                margin: '10px 100px 10px 100px',
-            }}>
-                <Text color='white'>Last hash found: {newHash.current}</Text>
-                <Text color='white'>{miningStatus ? <p>miningStatus: Running</p> :
-                    <p>miningStatus: Stopped</p>}</Text>
-                <Stopwatch/>
-            </Box>
-            <Button marginBottom={3} colorScheme={'blue'}
-                    onClick={() => setMiningStatus(!miningStatus)}>RUN/STOP</Button>
+            <MiningInfo miningStatus={miningStatus} setMiningStatus={setMiningStatus} newHash={newHash.current}/>
             <Center>
-                <Box width='200px' bg='#1f1f1f' borderWidth='2px' borderColor='white' borderRadius='10' padding={'3'}>
-                    <Text marginBottom='5' color='white'>Set Amount of Workers</Text>
-                    <Center>
-                        <HStack paddingBottom={'2'}>
-                            <NumberInput focusInputOnChange={false} defaultValue={workerAmount} min={1} max={maxThreads}
-                                         width='20'
-                                         onChange={(value) => workerNumber.current = value}>
-                                <NumberInputField borderWidth='3px' bg='gray' color='white'>
-                                </NumberInputField>
-                                <NumberInputStepper>
-                                    <NumberIncrementStepper/>
-                                    <NumberDecrementStepper/>
-                                </NumberInputStepper>
-                            </NumberInput>
-                            <Button colorScheme='blue'
-                                    onClick={() => setWorkerAmount(workerNumber.current)}>Apply</Button>
-                        </HStack>
-                    </Center>
-                </Box>
+                <WorkerComp workerAmount={workerAmount} setWorkerAmount={setWorkerAmount}/>
             </Center>
-        </div>
-    );
+        </>
+    )
 }
 
-export default MiningPage;
+export default MiningPage
