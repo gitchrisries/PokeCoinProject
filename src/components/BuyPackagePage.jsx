@@ -12,6 +12,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CardsApi} from "../clients/pokecoin/src";
 import _apiClient from "../helpers/globals";
+import {Select} from '@mantine/core';
 
 const cardApi = new CardsApi(_apiClient)
 
@@ -21,11 +22,22 @@ function BuyPackagePage() {
     const queryClient = useQueryClient()
     const {isOpen, onToggle} = useDisclosure()
     const [isError, setIsError] = useState(false)
+    const [selectData, setSelectData] = useState([])
+    const [selectedPackage, setSelectedPackage] = useState('')
 
     //Nur einmal?
-    const {data: availablePackages} = useQuery(['package'],
+    useQuery(['package'],
         async () => {
-            return await cardApi.cardsPackagesGet() //Array
+            const response = await cardApi.cardsPackagesGet()
+            setSelectData(response.map((name) => {
+                return {value: name, label: name}
+            }))
+            return response
+        })
+
+    const {data: packageCost} = useQuery(['packageCost'],
+        async () => {
+            return await cardApi.cardsPackagesCurrentPackageCostGet()
         })
 
     //Error catchen?
@@ -45,13 +57,13 @@ function BuyPackagePage() {
     }
 
     function handleClick() {
-        if ((amount.current * 25) > localStorage.getItem('walletBalance')) {
+        if ((amount.current * packageCost) > localStorage.getItem('walletBalance')) {
             setIsError(true)
             onToggle()
             return
         }
         for (let i = 0; i < amount.current; i++) {
-            mutate(availablePackages[0])
+            mutate(selectedPackage)
         }
     }
 
@@ -66,7 +78,10 @@ function BuyPackagePage() {
     }, [isOpen])
 
     return (
-        <VStack spacing={100}>
+        <VStack spacing={30}>
+            <Box borderRadius='lg' color='white' bg='#224173FF' p={2} borderWidth='2px' marginTop={5}>
+                <Select style={{color:'white', fontWeight: 'bold'}} placeholder='Pick Card Pack' data={selectData} value={selectedPackage} onChange={setSelectedPackage}/>
+            </Box>
             <Box borderRadius='lg' color='white' bg='#224173FF' p={2} borderWidth='2px'>
                 <HStack>
                     <Text color='whitesmoke' fontWeight='bold'>Amount</Text>
@@ -79,7 +94,7 @@ function BuyPackagePage() {
                             <NumberDecrementStepper/>
                         </NumberInputStepper>
                     </NumberInput>
-                    <Button isDisabled={isOpen} colorScheme={'blue'} onClick={() => handleClick()}>
+                    <Button isDisabled={isOpen || !selectedPackage} colorScheme={'blue'} onClick={() => handleClick()}>
                         Buy Package(s)
                     </Button>
                 </HStack>

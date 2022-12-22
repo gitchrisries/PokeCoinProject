@@ -1,6 +1,14 @@
 import React, {useEffect, useRef} from 'react'
 import {useStopwatch} from 'react-timer-hook';
-import {Box, Button, Center, Text} from '@chakra-ui/react'
+import {
+    Box,
+    Button,
+    Center, HStack, NumberDecrementStepper,
+    NumberIncrementStepper, NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    Text,
+} from '@chakra-ui/react'
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {BlockchainApi} from "../clients/pokecoin/src";
 import _apiClient from "../helpers/globals";
@@ -8,20 +16,17 @@ import runningGif from '../images/mining_running.gif'
 import stoppedGif from '../images/mining_stopped.gif'
 
 const blockchainApi = new BlockchainApi(_apiClient)
+const maxThreads = window.navigator.hardwareConcurrency
 
 function MiningPage() {
     const [miningStatus, setMiningStatus] = React.useState(true)
     const queryClient = useQueryClient()
     const newHash = useRef('')
-    const [workerAmount, setWorkerAmount] = React.useState(8)
-    const workers = useRef([])
+    const [workerAmount, setWorkerAmount] = React.useState(1)
+    const workerNumber = useRef(workerAmount)
+    const workerList = useRef(Array(workerAmount).fill(null))
 
-    for (let i = 0; i < workerAmount; i++) {
-        workers.current.push(null)
-    }
-
-    const {data: postedBlock, mutate} = useMutation(postBlock,
-        {
+    const {data: postedBlock, mutate} = useMutation(postBlock, {
             onSuccess: () => {
                 queryClient.invalidateQueries(['walletBalance']).catch(console.log)
             }
@@ -37,45 +42,44 @@ function MiningPage() {
         }
     )
 
-    //TODO: Get Difficulty
+    const {data: difficulty} = useQuery(['difficulty'],
+        async () => {
+            return await blockchainApi.blockchainCurrentDifficultyGet()
+        }
+    )
+
     async function runMining() {
         for (let i = 0; i < workerAmount; i++) {
-            workers.current[i].postMessage({previousHash: lastBlock.hash, difficulty: 6, string: `${i}abc${i}`})
-            workers.current[i].onmessage = (message) => {
+            workerList.current[i].postMessage({previousHash: lastBlock.hash, difficulty})
+            workerList.current[i].onmessage = (message) => {
                 newHash.current = message.data.newHash
                 mutate(message.data.newBlock)
             }
         }
     }
 
-    // document.addEventListener('visibilitychange', function () {
-    //     if (document.hidden) {
-    //         setMiningStatus(false)
-    //     } else {
-    //         setMiningStatus(true)
-    //     }
-    // })
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            setMiningStatus(false)
+        } else {
+            setMiningStatus(true)
+        }
+    })
 
     //terminate worker when component dismounts
     useEffect(() => {
-        return () => {
-            for (let i = 0; i < workerAmount; i++) {
-                workers.current[i]?.terminate()
-            }
-        }
+        return () => workerList.current.forEach(worker => worker?.terminate())
     }, [])
 
     useEffect(() => {
-        for (let i = 0; i < workerAmount; i++) {
-            workers.current[i]?.terminate()
-        }
-        if (miningStatus && lastBlock) {
+        workerList.current.forEach(worker => worker?.terminate())
+        if (miningStatus) {
             for (let i = 0; i < workerAmount; i++) {
-                workers.current[i] = new Worker(new URL('../helpers/worker.js', import.meta.url))
+                workerList.current[i] = new Worker(new URL('../helpers/worker.js', import.meta.url))
             }
             runMining().catch(console.log)
         }
-    }, [miningStatus, lastBlock])
+    }, [miningStatus, lastBlock, workerAmount])
 
     function Stopwatch() {
         const {minutes, seconds} = useStopwatch({autoStart: true})
@@ -101,13 +105,36 @@ function MiningPage() {
                 textAlign: 'center',
                 borderRadius: 10,
                 padding: 10,
-                margin: '10px 100px 10px 100px'
+                margin: '10px 100px 10px 100px',
             }}>
                 <Text color='white'>Last hash found: {newHash.current}</Text>
-                <Text color='white'>{miningStatus ? <p>miningStatus: Running</p> : <p>miningStatus: Stopped</p>}</Text>
+                <Text color='white'>{miningStatus ? <p>miningStatus: Running</p> :
+                    <p>miningStatus: Stopped</p>}</Text>
                 <Stopwatch/>
             </Box>
-            <Button colorScheme={'blue'} onClick={() => setMiningStatus(!miningStatus)}>RUN/STOP</Button>
+            <Button marginBottom={3} colorScheme={'blue'}
+                    onClick={() => setMiningStatus(!miningStatus)}>RUN/STOP</Button>
+            <Center>
+                <Box width='200px' bg='#1f1f1f' borderWidth='2px' borderColor='white' borderRadius='10' padding={'3'}>
+                    <Text marginBottom='5' color='white'>Set Amount of Workers</Text>
+                    <Center>
+                        <HStack paddingBottom={'2'}>
+                            <NumberInput focusInputOnChange={false} defaultValue={workerAmount} min={1} max={maxThreads}
+                                         width='20'
+                                         onChange={(value) => workerNumber.current = value}>
+                                <NumberInputField borderWidth='3px' bg='gray' color='white'>
+                                </NumberInputField>
+                                <NumberInputStepper>
+                                    <NumberIncrementStepper/>
+                                    <NumberDecrementStepper/>
+                                </NumberInputStepper>
+                            </NumberInput>
+                            <Button colorScheme='blue'
+                                    onClick={() => setWorkerAmount(workerNumber.current)}>Apply</Button>
+                        </HStack>
+                    </Center>
+                </Box>
+            </Center>
         </div>
     );
 }
