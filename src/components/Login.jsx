@@ -2,12 +2,29 @@ import React, {useState, createContext, useContext} from "react";
 import { Box, Input, HStack, VStack, InputGroup, InputLeftAddon, Button } from '@chakra-ui/react';
 import ApiClient from "../clients/pokecoin/src/ApiClient";
 import {UsersApi} from "../clients/pokecoin/src";
+//import {UserContext} from "../contexts/UserContext";
+import {useMutation} from "@tanstack/react-query";
 
 const url = 'http://localhost:3000'
 const UserContext = createContext({});
 
-function RegisterLoginButton({path, name}) {
-    const opts = {'body': useContext(UserContext)};
+const loginUser = async (userData) => {
+    const opts = {'body': userData};
+    const response = await new UsersApi(new ApiClient(`${url}`)).authLoginPost(opts);
+    return response;
+};
+
+const useLoginUser = (userData) => {
+    return useMutation(
+        ['login'],
+        (data) => loginUser(data, userData),
+        {
+            onSuccess: (data) => {console.log(data)},
+        }
+    );
+};
+
+function RegisterLoginButton({name}) {
     /*const handleRegister = React.useCallback(() => {
         const requestOptions = {
             method: 'POST',
@@ -22,18 +39,33 @@ function RegisterLoginButton({path, name}) {
             .then(result => console.log(result))
             .catch(error => console.log('error', error));
 
-    });*/
+    });
     const callback1 = (error,data,response) => {
         console.log('resp: '+response.text);
         console.log('data: '+data.username);
         console.log('error: '+error);
     };
+    const mutation= useMutation(async() => {
+        const response = await new UsersApi(new ApiClient(`${url}`)).authLoginPost(opts);
+        return response.data;
+    }, {
+        onSuccess: (data) => {
+            //localStorage.setItem('token', data.token);
+            console.log(data)
+        }
+    });
+    console.log(mutation);
+    if(mutation.error){
+        console.log(mutation.error.message);
+    }
     const handleRegister = () => {
         const apiClient = new ApiClient(url);
         console.log(new UsersApi(apiClient).authRegisterPost(opts,callback1));
-    };
+    };*/
+    const userdata = useContext(UserContext);
+    const { mutate: login} = useLoginUser();
     return (
-        <Button onClick={handleRegister}>{`${name}`}</Button>
+        <Button onClick={() => {if(userdata.username!=='' && userdata.password!=='') {login(userdata)}}}>{`${name}`}</Button>
     );
 }
 
@@ -62,8 +94,8 @@ function Login() {
                     <Input type='password' value={loginData.password} onChange={onChangePassword}/>
                 </InputGroup>
                 <HStack>
-                    <RegisterLoginButton path={'/auth/login'} name={'Login'}/>
-                    <RegisterLoginButton path={'/auth/register'} name={'Register'}/>
+                    <RegisterLoginButton name={'Login'}/>
+                    <RegisterLoginButton name={'Register'}/>
                 </HStack>
             </VStack>
         </UserContext.Provider>
