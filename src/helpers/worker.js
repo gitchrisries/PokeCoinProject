@@ -7,39 +7,32 @@ const calculateHash = (block) => {
         block.data +
         block.nonce.toString()
     )
-
     return SHA256(information).toString()
 }
 
 onmessage = ({data: {previousHash, difficulty}}) => {
-    let nonce = 0
     let timestamp = Date.now()
-    const max = Number.MAX_SAFE_INTEGER
     let newBlock = ''
     let newHash = ''
 
-    //console.log('Previous Hash in Worker: ',previousHash)
-
-    while (nonce <= max) {
-        nonce++
-
+    for (let nonce = 0; nonce <= Number.MAX_SAFE_INTEGER; nonce++) {
         newBlock = {
             previousHash,
             timestamp,
-            data: 'ABC',
+            data: (Math.random() + 1).toString(36).substring(7),
             nonce
         }
 
-        if (nonce === max) {
+        if (nonce === Number.MAX_SAFE_INTEGER) {
             nonce = 0
             timestamp = Date.now()
         }
 
         newHash = calculateHash(newBlock)
-
         if (newHash.startsWith(Array(difficulty).fill(0).join(''))) {
             postMessage({newBlock, newHash})
             return
         }
+
     }
 }
