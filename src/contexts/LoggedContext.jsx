@@ -16,9 +16,9 @@ export const LoggedContextProvider = ({ children }) => {
             setIsLoading(true);
             return await userApi.authMeGet()
         }, {
-            onSuccess: () => {setIsLoading(false),setLoggedIn(true); }
+            onSuccess: () => {setIsLoading(false); setLoggedIn(true); }
             ,
-            onError: () => {setIsLoading(false), setLoggedIn(false); }
+            onError: () => {setIsLoading(false); setLoggedIn(false); }
         }
     );
 
