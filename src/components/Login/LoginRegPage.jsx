@@ -18,8 +18,8 @@ const useLoginUser = (userData) => {
             onSuccess: (data) => {
                 localStorage.setItem('token', data.token);
                 _apiClient.authentications['token'].apiKey = localStorage.getItem('token');
-                queryClient.invalidateQueries(['auth']).catch(console.log)
-                console.log(data.token)
+                queryClient.invalidateQueries(['auth']).catch(console.log);
+                queryClient.invalidateQueries(['walletBalance']).catch(console.log);
             },
         }
     );
@@ -75,9 +75,6 @@ function LoginRegister() {
 
     return (
         <VStack spacing={8} align='left' ml={'5'}>
-            <Box>
-                <h2 align='left'>Login</h2>
-            </Box>
             <InputGroup>
                 <InputLeftAddon children='Username'/>
                 <Input type='text' color='white' value={loginData.username}

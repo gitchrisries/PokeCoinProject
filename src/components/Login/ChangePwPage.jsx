@@ -1,4 +1,4 @@
-import {Box, HStack, Input, InputGroup, InputLeftAddon, Tag, VStack, Button} from "@chakra-ui/react";
+import {Box, HStack, Input, InputGroup, InputLeftAddon, Tag, VStack, Button, Heading} from "@chakra-ui/react";
 import React,{useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {UsersApi} from "../../clients/pokecoin/src";
@@ -9,16 +9,15 @@ const userApi = new UsersApi(_apiClient);
 function ChangePassword(){
     const queryClient = useQueryClient();
     const[openChange, setOpenChange] = useState(false);
-    const [sendChange, setSendChange] = useState(false);
     const [passwordData, setPasswordData] = useState({password:'', newPassword:''});
 
     const setPasswData = React.useCallback((oldPw, newPw) => {
         setPasswordData({...passwordData, password: oldPw, newPassword: newPw});
     }, [passwordData])
 
-    const {mutate:changePw,error,isSuccess} = useMutation(
+    const {mutate:changePw} = useMutation(
         ['passwordChange'],
-        async (data,passwordData) => {
+        async (passwordData) => {
             return await userApi.authChangePasswordPost({'body': passwordData});
         }
     ,{
@@ -26,19 +25,18 @@ function ChangePassword(){
             localStorage.setItem('token', '');
             _apiClient.authentications['token'].apiKey = '';
             queryClient.invalidateQueries(['auth']).catch(console.log)
-            console.log(data)
         },
     });
 
     return(
         !openChange ?
-        <Tag bg={'blue'} onClick={() => setOpenChange(true)}>
-            Change Password?
-        </Tag> :
+            <>
+            <Heading color={'white'}>You are logged in!</Heading><br/>
+            <Tag bg={'blue'} size='lg' onClick={() => setOpenChange(true)}>
+                Change Password?
+            </Tag>
+            </> :
             <VStack spacing={8} align='left' ml={'5'}>
-                <Box>
-                    <h2 align='left'>Login</h2>
-                </Box>
                 <InputGroup>
                     <InputLeftAddon children='Current Password'/>
                     <Input type='password' value={passwordData.password} onChange={(e) => setPasswData(e.target.value, passwordData.newPassword)}/>
@@ -47,7 +45,9 @@ function ChangePassword(){
                     <InputLeftAddon children='New Password'/>
                     <Input type='password' value={passwordData.newPassword} onChange={(e) => setPasswData(passwordData.password, e.target.value)}/>
                 </InputGroup>
-                <Button onClick={() => changePw()}>Change Password</Button>
+                <HStack>
+                    <Button onClick={() => changePw(passwordData)}>Change Password</Button>
+                </HStack>
             </VStack>
     );
 }
