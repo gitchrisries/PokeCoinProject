@@ -18,7 +18,9 @@ export const HeaderBar=(props)=>{
     )
 
     return(
+
         <Header height={{base: 70, md: 70}} p="lg">
+
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <MediaQuery largerThan="sm" styles={{display: 'none'}}>
                     <Burger
