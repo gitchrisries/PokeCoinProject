@@ -18,7 +18,6 @@ import {
     Route,
     Routes
 } from 'react-router-dom'
-import Mining from "./components/Mining";
 import Login from "./components/Login";
 import logo from './images/pokecoins_lable.png'
 import BuyPackagePage from "./components/BuyPackagePage";
@@ -26,6 +25,7 @@ import React from "react";
 import _apiClient from "./helpers/globals";
 import {Box} from "@chakra-ui/react";
 import ShowCardsPage from "./pages/ShowCardsPage";
+import MiningPage from "./pages/MiningPage";
 
 const walletApi = new WalletApi(_apiClient)
 
@@ -91,7 +91,7 @@ function App() {
                     </Header>
                 }>
                 <Routes>
-                    <Route path='/mining' element={<Mining/>}/>
+                    <Route path='/mining' element={<MiningPage/>}/>
                     <Route path='/buying' element={<BuyPackagePage/>}/>
                     <Route path='/cards' element={<ShowCardsPage/>}/>
                     <Route path='/login' element={<Login/>}/>
