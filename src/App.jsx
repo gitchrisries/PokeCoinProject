@@ -20,12 +20,12 @@ import {
 } from 'react-router-dom'
 import Mining from "./components/Mining";
 import Login from "./components/Login";
-import UserCards from "./components/UserCards";
 import logo from './images/pokecoins_lable.png'
 import BuyPackagePage from "./components/BuyPackagePage";
 import React from "react";
 import _apiClient from "./helpers/globals";
 import {Box} from "@chakra-ui/react";
+import ShowCardsPage from "./pages/ShowCardsPage";
 
 const walletApi = new WalletApi(_apiClient)
 
@@ -55,12 +55,10 @@ function App() {
                         <div style={{display: 'flex', flexDirection: 'column'}}>
                             <Button style={{marginBottom: '20px', justifyContent: 'space-between'}} component={Link}
                                     variant="link" to='/mining'><TbHammer/> Mining</Button>
-                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/buying'><TbCoin
-                                style={{color: 'yellow'}}/>Buy Cards!</Button>
-                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/cards'><TbCoin
-                                style={{color: 'yellow'}}/>Show Cards!</Button>
+                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/buying'>Buy Cards</Button>
+                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/cards'>Show Cards</Button>
                             <Button style={{marginBottom: '20px'}} component={Link} variant="link"
-                                    to='/login'><TbBrandGravatar style={{color: 'red'}}/>Logout</Button>
+                                    to='/login'>Login</Button>
                         </div>
                     </Navbar>
                 }
@@ -95,7 +93,7 @@ function App() {
                 <Routes>
                     <Route path='/mining' element={<Mining/>}/>
                     <Route path='/buying' element={<BuyPackagePage/>}/>
-                    <Route path='/cards' element={<UserCards/>}/>
+                    <Route path='/cards' element={<ShowCardsPage/>}/>
                     <Route path='/login' element={<Login/>}/>
                 </Routes>
             </AppShell>
