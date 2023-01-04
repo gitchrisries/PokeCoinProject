@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {Button, Center, Text} from "@chakra-ui/react";
-import {useContext, useEffect, useRef, useState} from "react";
+import {Button, Center} from "@chakra-ui/react";
+import {useEffect, useRef, useState} from "react";
 import _apiClient from "../helpers/globals";
 import Pikachu from "../components/Mining/Pikachu";
 import MiningInfo from "../components/Mining/MiningInfo";
@@ -26,7 +26,7 @@ function MiningPage() {
         if (miningStatus) return await blockchainApi.blockchainBlocksPost({body: block})
     }
 
-    const {data: lastBlock} = useQuery(['lastBlock', postedBlock],
+    const {data: lastBlock} = useQuery(['lastBlock', postedBlock, workerAmount, miningStatus],
         async () => {
             return await blockchainApi.blockchainLastBlockGet()
         }
@@ -69,7 +69,7 @@ function MiningPage() {
             }
             runMining()
         }
-    }, [miningStatus, lastBlock, workerAmount, difficulty])
+    }, [lastBlock, difficulty])
 
     return (
         <>
