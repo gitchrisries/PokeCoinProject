@@ -1,4 +1,4 @@
-import _apiClient from "../helpers/globals";
+import {_apiClient} from "../helpers/globals";
 import {CardsApi} from "../clients/pokecoin/src";
 import {useQueries, useQuery, useQueryClient} from "@tanstack/react-query";
 import React,{useState} from "react";

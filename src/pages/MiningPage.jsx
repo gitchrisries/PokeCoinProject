@@ -1,7 +1,7 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Button, Center} from "@chakra-ui/react";
 import {useEffect, useRef, useState} from "react";
-import _apiClient from "../helpers/globals";
+import {_apiClient} from "../helpers/globals";
 import Pikachu from "../components/Mining/Pikachu";
 import MiningInfo from "../components/Mining/MiningInfo";
 import WorkerComp from "../components/Mining/WorkerComp";
