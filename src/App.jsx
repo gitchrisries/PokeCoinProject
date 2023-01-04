@@ -20,6 +20,7 @@ import {
 } from 'react-router-dom'
 import Mining from "./components/Mining";
 import Login from "./components/Login";
+import UserCards from "./components/UserCards";
 import logo from './images/pokecoins_lable.png'
 import BuyPackagePage from "./components/BuyPackagePage";
 import React from "react";
@@ -56,6 +57,8 @@ function App() {
                                     variant="link" to='/mining'><TbHammer/> Mining</Button>
                             <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/buying'><TbCoin
                                 style={{color: 'yellow'}}/>Buy Cards!</Button>
+                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/cards'><TbCoin
+                                style={{color: 'yellow'}}/>Show Cards!</Button>
                             <Button style={{marginBottom: '20px'}} component={Link} variant="link"
                                     to='/login'><TbBrandGravatar style={{color: 'red'}}/>Logout</Button>
                         </div>
@@ -92,6 +95,7 @@ function App() {
                 <Routes>
                     <Route path='/mining' element={<Mining/>}/>
                     <Route path='/buying' element={<BuyPackagePage/>}/>
+                    <Route path='/cards' element={<UserCards/>}/>
                     <Route path='/login' element={<Login/>}/>
                 </Routes>
             </AppShell>
