@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {ChakraProvider} from '@chakra-ui/react'
 import {MantineProvider} from '@mantine/core';
+import {LoggedContextProvider} from "./contexts/LoggedContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const queryClient = new QueryClient();
@@ -15,7 +16,9 @@ root.render(
         <QueryClientProvider client={queryClient}>
             <MantineProvider theme={{colorScheme: 'dark'}}>
                 <ChakraProvider>
+                    <LoggedContextProvider>
                         <App/>
+                    </LoggedContextProvider>
                 </ChakraProvider>
             </MantineProvider>
         </QueryClientProvider>
