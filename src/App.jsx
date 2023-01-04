@@ -20,7 +20,7 @@ import {
 } from 'react-router-dom'
 import Login from "./components/Login";
 import logo from './images/pokecoins_lable.png'
-import BuyPackagePage from "./components/BuyPackagePage";
+import BuyPackagePage from "./pages/BuyPackagePage";
 import React from "react";
 import _apiClient from "./helpers/globals";
 import {Box} from "@chakra-ui/react";
