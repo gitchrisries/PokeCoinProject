@@ -71,9 +71,7 @@ function ShowCardsPage() {
                             </Box>
                         </HStack>
                         <div style={{margin: '4%'}}>
-                                <CardGrid allCards={allCards} userCards={userCardsCountDict}
-                                          filtered={Object.keys(allCards)}/>
-
+                                <CardGrid allCards={allCards} userCards={userCardsCountDict}/>
                         </div>
                     </Tabs>
                 }
