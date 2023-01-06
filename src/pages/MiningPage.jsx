@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {Button, Center} from "@chakra-ui/react";
+import {Button, Center, useToast} from "@chakra-ui/react";
 import {useEffect, useRef, useState} from "react";
 import {_apiClient} from "../helpers/globals";
 import Pikachu from "../components/Mining/Pikachu";
@@ -15,10 +15,41 @@ function MiningPage() {
     const queryClient = useQueryClient()
     const newHash = useRef('')
     const workerList = useRef(Array(workerAmount).fill(null))
+    const toast = useToast()
 
     const {data: postedBlock, mutate} = useMutation(postBlock, {
         onSuccess: () => {
             queryClient.invalidateQueries(['walletBalance']).catch(console.log)
+            toast({
+                title: 'Success',
+                description: `New hash found!`,
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+                position: 'bottom-right'
+            })
+        },
+        onError: (error) => {
+            if (error.status === 400) {
+                toast({
+                    title: 'Hash is not valid',
+                    description: `Too Late, last block was invalid.`,
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                    position: 'bottom-right'
+                })
+            }
+            if (error.status === 500) {
+                toast({
+                    title: 'Error posting block',
+                    description: `Unexpected server error.`,
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                    position: 'bottom-right'
+                })
+            }
         }
     })
 
