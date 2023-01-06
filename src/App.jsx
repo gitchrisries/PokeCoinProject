@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import {TbHammer, TbCoin, TbBrandGravatar} from "react-icons/tb";
 import {
     AppShell,
@@ -24,19 +24,23 @@ import BuyPackagePage from "./pages/BuyPackagePage";
 import React from "react";
 import {_apiClient} from "./helpers/globals";
 import {Box} from "@chakra-ui/react";
+import {LoggedContext} from "./contexts/LoggedContext";
 import ShowCardsPage from "./pages/ShowCardsPage";
 import MiningPage from "./pages/MiningPage";
 
 const walletApi = new WalletApi(_apiClient)
 
 function App() {
+
+    const {loggedIn} = React.useContext(LoggedContext);
     const {data: walletBalance} = useQuery(['walletBalance'],
         async () => {
             const response = await walletApi.walletBalanceGet()
             localStorage.setItem('walletBalance', response.amount)
             return response
-        }
-    )
+        }, {
+            enabled: loggedIn
+        });
 
     const theme = useMantineTheme();
     const [opened, setOpened] = useState(false);

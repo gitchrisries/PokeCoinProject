@@ -11,14 +11,16 @@ export const LoggedContextProvider = ({ children }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
+    const token = _apiClient?.authentications['token']?.apiKey
+
     useQuery(['auth'],
         async () => {
             setIsLoading(true);
             return await userApi.authMeGet()
         }, {
-            onSuccess: () => {setIsLoading(false); setLoggedIn(true); }
-            ,
-            onError: () => {setIsLoading(false); setLoggedIn(false); }
+            onSuccess: () => {setIsLoading(false); setLoggedIn(true); },
+            onError: () => {setIsLoading(false); setLoggedIn(false); },
+            enabled: !!token
         }
     );
 
