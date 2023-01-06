@@ -3,6 +3,7 @@ import React,{useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {UsersApi} from "../../clients/pokecoin/src";
 import {_apiClient} from "../../helpers/globals";
+import {LoggedContext} from "../../contexts/LoggedContext";
 
 const userApi = new UsersApi(_apiClient);
 
@@ -10,6 +11,7 @@ function ChangePassword(){
     const queryClient = useQueryClient();
     const[openChange, setOpenChange] = useState(false);
     const [passwordData, setPasswordData] = useState({password:'', newPassword:''});
+    const {setLoggedIn} = React.useContext(LoggedContext);
 
     const setPasswData = React.useCallback((oldPw, newPw) => {
         setPasswordData({...passwordData, password: oldPw, newPassword: newPw});
@@ -24,7 +26,8 @@ function ChangePassword(){
         onSuccess: (data) => {
             localStorage.setItem('token', '');
             _apiClient.authentications['token'].apiKey = '';
-            queryClient.invalidateQueries(['auth']).catch(console.log)
+            //queryClient.invalidateQueries(['auth']).catch(console.log)
+            setLoggedIn(false)
         },
     });
 
@@ -32,9 +35,9 @@ function ChangePassword(){
         !openChange ?
             <>
             <Heading color={'white'}>You are logged in!</Heading><br/>
-            <Tag bg={'blue'} size='lg' onClick={() => setOpenChange(true)}>
+            <Button bg={'blue'} size='lg' onClick={() => setOpenChange(true)}>
                 Change Password?
-            </Tag>
+            </Button>
             </> :
             <VStack spacing={8} align='left' ml={'5'}>
                 <InputGroup>

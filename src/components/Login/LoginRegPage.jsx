@@ -3,11 +3,13 @@ import {Box, Input, HStack,VStack,InputGroup,InputLeftAddon,Button,useToast} fro
 import {UsersApi} from "../../clients/pokecoin/src";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {_apiClient} from "../../helpers/globals";
+import {LoggedContext} from "../../contexts/LoggedContext";
 
 const userApi = new UsersApi(_apiClient);
 
 const useLoginUser = (userData) => {
     const queryClient = useQueryClient();
+    const {setLoggedIn} = React.useContext(LoggedContext);
 
     return useMutation(
         ['login'],
@@ -18,8 +20,9 @@ const useLoginUser = (userData) => {
             onSuccess: (data) => {
                 localStorage.setItem('token', data.token);
                 _apiClient.authentications['token'].apiKey = localStorage.getItem('token');
-                queryClient.invalidateQueries(['auth']).catch(console.log);
+                //queryClient.invalidateQueries(['auth']).catch(console.log);
                 queryClient.invalidateQueries(['walletBalance']).catch(console.log);
+                setLoggedIn(true);
             },
         }
     );
