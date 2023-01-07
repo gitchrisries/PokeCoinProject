@@ -19,7 +19,7 @@ import {
     Routes
 } from 'react-router-dom'
 import Login from "./components/Login";
-import logo from './images/pokecoins_lable.png'
+import logo from './assets/pokecoins_lable.png'
 import BuyPackagePage from "./pages/BuyPackagePage";
 import React from "react";
 import {_apiClient} from "./helpers/globals";
@@ -31,8 +31,8 @@ import MiningPage from "./pages/MiningPage";
 const walletApi = new WalletApi(_apiClient)
 
 function App() {
-
     const {loggedIn} = React.useContext(LoggedContext);
+
     const {data: walletBalance} = useQuery(['walletBalance'],
         async () => {
             const response = await walletApi.walletBalanceGet()

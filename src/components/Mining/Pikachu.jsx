@@ -1,6 +1,6 @@
 import {Box} from "@chakra-ui/react";
-import runningGif from "../../images/mining_running.gif";
-import stoppedGif from "../../images/mining_stopped.gif";
+import runningGif from "../../assets/mining_running.gif";
+import stoppedGif from "../../assets/mining_stopped.gif";
 import React from 'react';
 
 const Pikachu = React.memo(({miningStatus}) => {
