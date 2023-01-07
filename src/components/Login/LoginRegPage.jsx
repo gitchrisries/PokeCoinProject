@@ -2,7 +2,7 @@ import React, {useState, useEffect ,createContext, useContext} from "react";
 import {Box, Input, HStack,VStack,InputGroup,InputLeftAddon,Button,useToast} from '@chakra-ui/react';
 import {UsersApi} from "../../clients/pokecoin/src";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import _apiClient from "../../helpers/globals";
+import {_apiClient} from "../../helpers/globals";
 
 const userApi = new UsersApi(_apiClient);
 

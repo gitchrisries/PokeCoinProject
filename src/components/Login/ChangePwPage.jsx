@@ -2,7 +2,7 @@ import {Box, HStack, Input, InputGroup, InputLeftAddon, Tag, VStack, Button, Hea
 import React,{useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {UsersApi} from "../../clients/pokecoin/src";
-import _apiClient from "../../helpers/globals";
+import {_apiClient} from "../../helpers/globals";
 
 const userApi = new UsersApi(_apiClient);
 

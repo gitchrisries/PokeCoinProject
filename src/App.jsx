@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 import {useState} from 'react';
 import {NavBar} from './components/Layout/NavBar'
 import {HeaderBar} from "./components/Layout/Header";
+=======
+import {useContext, useState} from 'react';
+import {TbHammer, TbCoin, TbBrandGravatar} from "react-icons/tb";
+>>>>>>> main
 import {
     AppShell,
     useMantineTheme,
@@ -10,13 +15,36 @@ import {
     Route,
     Routes
 } from 'react-router-dom'
-import Mining from "./components/Mining";
 import Login from "./components/Login";
+<<<<<<< HEAD
 import BuyPackagePage from "./components/BuyPackagePage";
 import React from "react";
+=======
+import logo from './images/pokecoins_lable.png'
+import BuyPackagePage from "./pages/BuyPackagePage";
+import React from "react";
+import {_apiClient} from "./helpers/globals";
+import {Box} from "@chakra-ui/react";
+import {LoggedContext} from "./contexts/LoggedContext";
+import ShowCardsPage from "./pages/ShowCardsPage";
+import MiningPage from "./pages/MiningPage";
+>>>>>>> main
 
 
 function App() {
+<<<<<<< HEAD
+=======
+
+    const {loggedIn} = React.useContext(LoggedContext);
+    const {data: walletBalance} = useQuery(['walletBalance'],
+        async () => {
+            const response = await walletApi.walletBalanceGet()
+            localStorage.setItem('walletBalance', response.amount)
+            return response
+        }, {
+            enabled: loggedIn
+        });
+>>>>>>> main
 
     const theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
@@ -30,11 +58,55 @@ function App() {
                 }}
                 navbarOffsetBreakpoint="sm"
                 asideOffsetBreakpoint="sm"
+<<<<<<< HEAD
                 navbar={<NavBar opened={opened}/>}
                 header={<HeaderBar opened={opened} setOpened={setOpened} theme={theme}/>}>
+=======
+                navbar={
+                    <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{sm: 150, lg: 200}}>
+                        <div style={{display: 'flex', flexDirection: 'column'}}>
+                            <Button style={{marginBottom: '20px', justifyContent: 'space-between'}} component={Link}
+                                    variant="link" to='/mining'><TbHammer/> Mining</Button>
+                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/buying'>Buy Cards</Button>
+                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/cards'>Show Cards</Button>
+                            <Button style={{marginBottom: '20px'}} component={Link} variant="link"
+                                    to='/login'>Login</Button>
+                        </div>
+                    </Navbar>
+                }
+
+                header={
+                    <Header height={{base: 50, md: 70}} p="md">
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <MediaQuery largerThan="sm" styles={{display: 'none'}}>
+                                <Burger
+                                    opened={opened}
+                                    onClick={() => setOpened((o) => !o)}
+                                    size="sm"
+                                    color={theme.colors.gray[6]}
+                                    mr="xl"
+                                />
+                            </MediaQuery>
+
+                            <Image src={logo} alt='PokeCoins' c='white' width='150px'/>
+                            <Box width='200px' bg='#0398fc' style={{
+                                    textAlign: 'center',
+                                    borderRadius: 6,
+                                    paddingTop: 1,
+                                    marginLeft: 10
+                                }}>
+                                <Text color='white' mt='6px' fw={600}>Wallet Balance: {walletBalance?.amount}</Text>
+                            </Box>
+                        </div>
+                        <div style={{display: 'flex', alignItems: 'center', height: '100%'}}>
+                        </div>
+                    </Header>
+                }>
+>>>>>>> main
                 <Routes>
-                    <Route path='/mining' element={<Mining/>}/>
+                    <Route path='/mining' element={<MiningPage/>}/>
                     <Route path='/buying' element={<BuyPackagePage/>}/>
+                    <Route path='/cards' element={<ShowCardsPage/>}/>
                     <Route path='/login' element={<Login/>}/>
                 </Routes>
             </AppShell>

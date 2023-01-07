@@ -1,7 +1,7 @@
 import React, {useState, createContext, useContext} from "react";
 import {Heading} from '@chakra-ui/react';
 import {UsersApi} from "../clients/pokecoin/src";
-import _apiClient from "../helpers/globals";
+import {_apiClient} from "../helpers/globals";
 import LoginRegister from "./Login/LoginRegPage";
 import {useQuery} from "@tanstack/react-query";
 import ChangePassword from "./Login/ChangePwPage";
