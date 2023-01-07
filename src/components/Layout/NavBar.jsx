@@ -14,8 +14,9 @@ export const NavBar=(props)=>{
                         variant="link" to='/mining'><TbHammer/> Mining</Button>
                 <Button disabled={activeButton==='button2'} style={{marginBottom: '20px'}} component={Link} variant="link" to='/buying' onClick={()=> setActiveButton('button2')}><TbCoin
                     style={{color: 'yellow'}}/>Buy Cards!</Button>
-                <Button disabled={activeButton==='button3'} style={{marginBottom: '20px'}} component={Link} variant="link"
-                        to='/login' onClick={()=> setActiveButton('button3')}><TbBrandGravatar style={{color: 'red'}}/>Logout</Button>
+                <Button disabled={activeButton==='button3'} style={{marginBottom: '20px'}} component={Link} variant="link" to='/cards' onClick={()=> setActiveButton('button3')}>Show Cards</Button>
+                <Button disabled={activeButton==='button4'} style={{marginBottom: '20px'}} component={Link} variant="link"
+                        to='/login' onClick={()=> setActiveButton('button4')}><TbBrandGravatar style={{color: 'red'}}/>Logout</Button>
             </div>
         </Navbar>
     )
