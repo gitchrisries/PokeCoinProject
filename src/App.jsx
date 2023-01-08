@@ -18,29 +18,31 @@ import {
     Route,
     Routes
 } from 'react-router-dom'
-import Login from "./components/Login";
 import logo from './images/pokecoins_lable.png'
 import BuyPackagePage from "./pages/BuyPackagePage";
 import React from "react";
 import {_apiClient} from "./helpers/globals";
-import {Box} from "@chakra-ui/react";
-import {LoggedContext} from "./contexts/LoggedContext";
+import {Box, useDisclosure} from "@chakra-ui/react";
 import ShowCardsPage from "./pages/ShowCardsPage";
 import MiningPage from "./pages/MiningPage";
+import LoginModal2 from "./pages/LoginModal2";
+import {LoggedContext} from "./contexts/LoggedContext";
+import UserFunctions from "./pages/UserFunctions";
 
 const walletApi = new WalletApi(_apiClient)
 
 function App() {
+    const {loggedIn} = useContext(LoggedContext)
 
-    const {loggedIn} = React.useContext(LoggedContext);
     const {data: walletBalance} = useQuery(['walletBalance'],
         async () => {
             const response = await walletApi.walletBalanceGet()
             localStorage.setItem('walletBalance', response.amount)
             return response
         }, {
-            enabled: loggedIn
-        });
+            enabled: loggedIn || false
+        }
+    )
 
     const theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
@@ -82,15 +84,14 @@ function App() {
 
                             <Image src={logo} alt='PokeCoins' c='white' width='150px'/>
                             <Box width='200px' bg='#0398fc' style={{
-                                    textAlign: 'center',
-                                    borderRadius: 6,
-                                    paddingTop: 1,
-                                    marginLeft: 10
-                                }}>
+                                textAlign: 'center',
+                                borderRadius: 6,
+                                paddingTop: 1,
+                                marginLeft: 10
+                            }}>
                                 <Text color='white' mt='6px' fw={600}>Wallet Balance: {walletBalance?.amount}</Text>
                             </Box>
-                        </div>
-                        <div style={{display: 'flex', alignItems: 'center', height: '100%'}}>
+                            <UserFunctions/>
                         </div>
                     </Header>
                 }>
@@ -98,7 +99,7 @@ function App() {
                     <Route path='/mining' element={<MiningPage/>}/>
                     <Route path='/buying' element={<BuyPackagePage/>}/>
                     <Route path='/cards' element={<ShowCardsPage/>}/>
-                    <Route path='/login' element={<Login/>}/>
+                    <Route path='/login' element={<LoginModal2/>}/>
                 </Routes>
             </AppShell>
         </Router>
