@@ -21,10 +21,10 @@ import {_apiClient} from "../helpers/globals";
 import {UsersApi} from "../clients/pokecoin/src";
 import {useEffect, useRef, useState} from "react";
 import {HiOutlineKey, HiUser, HiOutlineEye, HiOutlineEyeOff} from "react-icons/hi"
-
+import SuccessModalContent from "./SuccessModalContent";
 const userApi = new UsersApi(_apiClient)
 
-function SuccessModalContent({onClose, username}) {
+/*function SuccessModalContent({onClose, username}) {
     return (
         <>
             <ModalHeader textAlign={'center'} fontWeight={'bold'} fontSize={'1.7rem'}
@@ -37,7 +37,7 @@ function SuccessModalContent({onClose, username}) {
             </ModalFooter>
         </>
     )
-}
+}*/
 /*wann useContext?
 wann useCallback? -> useCallback vorteilhaft, insbesondere wenn funktionen an child komponenten gegeben werden
 isLoading etc. überall rein? -> ja
@@ -45,7 +45,7 @@ state onChange direkt in ändern ohne handlerfunktion?
 github, commits?
 kein console.log, besser console.error etc.
  */
-function LoginModal({isOpen, onClose, buttonName, option}) {
+function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTexButton}) {
     const [logInSuccess, setLogInSuccess] = useState(false)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -56,9 +56,8 @@ function LoginModal({isOpen, onClose, buttonName, option}) {
     const usernameEmpty = username === ''
     const errorCodes = {UserNotFoundError: 'User not found.', PasswordIncorrectError: 'Password not correct. Try again.',
         UserAlreadyExistsError: 'User already exists. Please choose another name'}
-    const mutateFunction = option==='register' ? tryRegister : option==='login' ? tryLogin : tryChangePassword;
 
-    const {mutate: login, isLoading} = useMutation(mutateFunction, {
+    const {mutate: login, isLoading} = useMutation(printedOption==='Register' ? tryRegister : tryLogin, {
         onSuccess: (resp) => {
             localStorage.setItem('token', resp.token)
             _apiClient.authentications['token'].apiKey = localStorage.getItem('token');
@@ -85,10 +84,6 @@ function LoginModal({isOpen, onClose, buttonName, option}) {
         return await userApi.authRegisterPost({body: {username, password}})
     }
 
-    async function tryChangePassword() {
-        return await userApi.authChangePasswordPost({body: {password: username, newPassword: password}})
-    }
-
     function handleSubmit(e) {
         e.preventDefault()
         login()
@@ -107,16 +102,16 @@ function LoginModal({isOpen, onClose, buttonName, option}) {
             <ModalOverlay bg={"blackAlpha.700"}/>
             <ModalContent bg={"#172646"}>
                 <ModalCloseButton _hover={{bg: 'whiteAlpha.200'}} color={'white'}/>
-                {logInSuccess && <SuccessModalContent onClose={onClose} username={username}/>}
+                {logInSuccess && <SuccessModalContent onClose={onClose} successInfo={`${successModalInfo} ${username}`} textButton={successTexButton} header={`${printedOption} successfull`}/>}
                 {!logInSuccess &&
                     <>
                         <ModalHeader textAlign={'center'} fontWeight={'bold'} fontSize={'1.7rem'}
-                                     color={'white'}>{buttonName}</ModalHeader>
+                                     color={'white'}>{printedOption}</ModalHeader>
                         {logInError &&
                             <Box bg={"#1e1e1e"} borderRadius={'0.4rem'}
                                  style={{margin: '0rem 1.5rem 0rem 1.5rem', textAlign: 'center'}}
                                  borderColor={"#E53E3E"} borderWidth={'2px'} padding={'0.5rem'}>
-                                <Text color={'white'}>{buttonName} failed.</Text>
+                                <Text color={'white'}>{printedOption} failed.</Text>
                                 <Text color={'white'}>{logInError}</Text>
                             </Box>
                         }
@@ -143,7 +138,7 @@ function LoginModal({isOpen, onClose, buttonName, option}) {
                                         <InputRightElement pointerEvents={'auto'}
                                                            _hover={{bg: 'whiteAlpha.200', cursor: 'pointer'}}
                                                            onClick={() => setShowPassword(!showPassword)}
-                                                           children={showPassword ? <HiOutlineEyeOff color='white'/>
+                                                           children={!showPassword ? <HiOutlineEyeOff color='white'/>
                                                                : <HiOutlineEye color='white'/>}/>
                                         <Input variant={'filled'} backgroundColor={"#313131"}
                                                _hover={{borderWidth: '2px', borderColor: 'gray'}}
@@ -155,9 +150,9 @@ function LoginModal({isOpen, onClose, buttonName, option}) {
                                         : (<FormErrorMessage>Password is required.</FormErrorMessage>)}
                                 </FormControl>
                             </ModalBody>
-                            <ModalFooter justifyContent={'space-around'}>
+                            <ModalFooter justifyContent={'center'}>
                                 <Button width={'100%'} isDisabled={usernameEmpty || passwordEmpty} isLoading={isLoading}
-                                        type={'submit'} colorScheme='blue' mb={4}>{buttonName}</Button>
+                                        type={'submit'} colorScheme='blue' mb={4}>{printedOption}</Button>
                             </ModalFooter>
                         </form>
                     </>

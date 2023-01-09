@@ -33,13 +33,18 @@ const walletApi = new WalletApi(_apiClient)
 
 function App() {
     const {loggedIn} = useContext(LoggedContext)
+    const [walletBalance, setWalletBalance] = useState('');
 
-    const {data: walletBalance} = useQuery(['walletBalance'],
+    useQuery(['walletBalance'],
         async () => {
             const response = await walletApi.walletBalanceGet()
             localStorage.setItem('walletBalance', response.amount)
             return response
         }, {
+            onError: () => setWalletBalance(''),
+            onSuccess: (response) => {
+                setWalletBalance(response.amount);
+            },
             enabled: loggedIn || false
         }
     )
@@ -61,8 +66,10 @@ function App() {
                         <div style={{display: 'flex', flexDirection: 'column'}}>
                             <Button style={{marginBottom: '20px', justifyContent: 'space-between'}} component={Link}
                                     variant="link" to='/mining'><TbHammer/> Mining</Button>
-                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/buying'>Buy Cards</Button>
-                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/cards'>Show Cards</Button>
+                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/buying'>Buy
+                                Cards</Button>
+                            <Button style={{marginBottom: '20px'}} component={Link} variant="link" to='/cards'>Show
+                                Cards</Button>
                             <Button style={{marginBottom: '20px'}} component={Link} variant="link"
                                     to='/login'>Login</Button>
                         </div>
@@ -89,7 +96,7 @@ function App() {
                                 paddingTop: 1,
                                 marginLeft: 10
                             }}>
-                                <Text color='white' mt='6px' fw={600}>Wallet Balance: {walletBalance?.amount}</Text>
+                                <Text color='white' mt='6px' fw={600}>Wallet Balance: {loggedIn ? walletBalance : ''}</Text>
                             </Box>
                             <UserFunctions/>
                         </div>

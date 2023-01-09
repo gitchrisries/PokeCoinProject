@@ -3,36 +3,48 @@ import {LoggedContext} from "../contexts/LoggedContext";
 import {useDisclosure, HStack, MenuButton, MenuList, Menu, MenuItem, MenuDivider, Avatar} from "@chakra-ui/react";
 import LoginModal from "./LoginModal";
 import PasswordModal from "./PasswordModal";
-import {UsersApi} from "../clients/pokecoin/src";
 import {_apiClient} from "../helpers/globals";
 import {UnlockIcon, RepeatIcon, AddIcon, CloseIcon} from "@chakra-ui/icons";
+import {useQueryClient} from "@tanstack/react-query";
 
-const userApi = new UsersApi(_apiClient)
 
-function UserFunctions(){
-    const {loggedIn} = useContext(LoggedContext)
+function UserFunctions() {
+    const {loggedIn, setLoggedIn} = useContext(LoggedContext)
+    const queryClient = useQueryClient()
     const {isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin} = useDisclosure()
     const {isOpen: isOpenReg, onOpen: onOpenReg, onClose: onCloseReg} = useDisclosure()
     const {isOpen: isOpenPw, onOpen: onOpenPw, onClose: onClosePw} = useDisclosure()
 
-    return(
-        <Menu>
-            <MenuButton as={Avatar} bg='#0398fc' >
-            </MenuButton>
-            <MenuList >
-                {!loggedIn  ? <>
-                <MenuItem icon={<UnlockIcon/>} onClick={onOpenLogin}>Login</MenuItem>
-                <MenuItem icon={<AddIcon/>} onClick={onOpenReg}>Register</MenuItem>
-                </> : <>
-                <MenuItem bg='#0398fc' icon={<RepeatIcon/>} onClick={onOpenPw}>Change Password</MenuItem>
-                    <MenuDivider />
-                    <MenuItem icon={<CloseIcon/>}>Logout</MenuItem>
-                </>}
-                {isOpenLogin && <LoginModal isOpen={isOpenLogin} onClose={onCloseLogin} buttonName={'Login'} option={'login'}/>}
-                {isOpenReg && <LoginModal isOpen={isOpenReg} onClose={onCloseReg} buttonName={'Register'} option={'register'}/>}
-                {isOpenPw && <PasswordModal isOpen={isOpenPw} onClose={onClosePw} buttonName={'Change Password'} option={'changePassword'}/>}
-            </MenuList>
-        </Menu>
+    const handleLogout = () => {
+        setLoggedIn(false);
+        localStorage.removeItem('token')
+        _apiClient.authentications['token'].apiKey = '';
+        queryClient.invalidateQueries({queryKey: ['walletBalance']}).catch(console.error)
+    }
+    return (
+        <>
+            <Menu>
+                <MenuButton as={Avatar} bg='#0398fc'>
+                </MenuButton>
+                <MenuList>
+                    {!loggedIn ? <>
+                        <MenuItem icon={<UnlockIcon/>} onClick={onOpenLogin}>Login</MenuItem>
+                        <MenuItem icon={<AddIcon/>} onClick={onOpenReg}>Register</MenuItem>
+                    </> : <>
+                        <MenuItem bg='#0398fc' icon={<RepeatIcon/>} onClick={onOpenPw}>Change Password</MenuItem>
+                        <MenuDivider/>
+                        <MenuItem icon={<CloseIcon/>} onClick={handleLogout}>Logout</MenuItem>
+                    </>}
+                </MenuList>
+            </Menu>
+            {isOpenLogin &&
+                <LoginModal isOpen={isOpenLogin} onClose={onCloseLogin} printedOption={'Login'} successModalInfo={'You are logged in as'} successTexButton={"Let's mine!"}/>}
+            {isOpenReg &&
+                <LoginModal isOpen={isOpenReg} onClose={onCloseReg} printedOption={'Register'} successModalInfo={'You are registered as'} successTexButton={'Back to website'}/>}
+            {isOpenPw &&
+                <PasswordModal isOpen={isOpenPw} onClose={onClosePw} buttonName={'Change Password'}
+                               option={'changePassword'}/>}
+        </>
     );
 }
 
