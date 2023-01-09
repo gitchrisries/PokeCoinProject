@@ -1,8 +1,8 @@
 import React, {useContext} from "react";
 import {LoggedContext} from "../contexts/LoggedContext";
 import {useDisclosure, HStack, MenuButton, MenuList, Menu, MenuItem, MenuDivider, Avatar} from "@chakra-ui/react";
-import {Button} from "@mantine/core";
-import LoginModal2 from "./LoginModal2";
+import LoginModal from "./LoginModal";
+import PasswordModal from "./PasswordModal";
 import {UsersApi} from "../clients/pokecoin/src";
 import {_apiClient} from "../helpers/globals";
 import {UnlockIcon, RepeatIcon, AddIcon, CloseIcon} from "@chakra-ui/icons";
@@ -28,9 +28,9 @@ function UserFunctions(){
                     <MenuDivider />
                     <MenuItem icon={<CloseIcon/>}>Logout</MenuItem>
                 </>}
-                {isOpenLogin && <LoginModal2 isOpen={isOpenLogin} onClose={onCloseLogin} buttonName={'Login'} option={'login'}/>}
-                {isOpenReg && <LoginModal2 isOpen={isOpenReg} onClose={onCloseReg} buttonName={'Register'} option={'register'}/>}
-                {isOpenPw && <LoginModal2 isOpen={isOpenPw} onClose={onClosePw} buttonName={'Change Password'} option={'changePassword'}/>}
+                {isOpenLogin && <LoginModal isOpen={isOpenLogin} onClose={onCloseLogin} buttonName={'Login'} option={'login'}/>}
+                {isOpenReg && <LoginModal isOpen={isOpenReg} onClose={onCloseReg} buttonName={'Register'} option={'register'}/>}
+                {isOpenPw && <PasswordModal isOpen={isOpenPw} onClose={onClosePw} buttonName={'Change Password'} option={'changePassword'}/>}
             </MenuList>
         </Menu>
     );

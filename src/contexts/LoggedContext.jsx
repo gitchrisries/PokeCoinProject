@@ -11,8 +11,6 @@ export const LoggedContextProvider = ({ children }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
-    const token = _apiClient?.authentications['token']?.apiKey
-
     useQuery(['auth'],
         async () => {
             setIsLoading(true);
@@ -20,7 +18,7 @@ export const LoggedContextProvider = ({ children }) => {
         }, {
             onSuccess: () => {setIsLoading(false); setLoggedIn(true); },
             onError: () => {setIsLoading(false); setLoggedIn(false); },
-            enabled: !!token
+            enabled: false
         }
     );
 

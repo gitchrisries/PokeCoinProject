@@ -25,9 +25,9 @@ import {_apiClient} from "./helpers/globals";
 import {Box, useDisclosure} from "@chakra-ui/react";
 import ShowCardsPage from "./pages/ShowCardsPage";
 import MiningPage from "./pages/MiningPage";
-import LoginModal2 from "./pages/LoginModal2";
+import LoginModal from "./components/LoginModal";
 import {LoggedContext} from "./contexts/LoggedContext";
-import UserFunctions from "./pages/UserFunctions";
+import UserFunctions from "./components/UserFunctions";
 
 const walletApi = new WalletApi(_apiClient)
 
@@ -99,7 +99,7 @@ function App() {
                     <Route path='/mining' element={<MiningPage/>}/>
                     <Route path='/buying' element={<BuyPackagePage/>}/>
                     <Route path='/cards' element={<ShowCardsPage/>}/>
-                    <Route path='/login' element={<LoginModal2/>}/>
+                    <Route path='/login' element={<LoginModal/>}/>
                 </Routes>
             </AppShell>
         </Router>

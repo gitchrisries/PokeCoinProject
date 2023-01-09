@@ -38,8 +38,14 @@ function SuccessModalContent({onClose, username}) {
         </>
     )
 }
-
-function LoginModal2({isOpen, onClose, buttonName, option}) {
+/*wann useContext?
+wann useCallback? -> useCallback vorteilhaft, insbesondere wenn funktionen an child komponenten gegeben werden
+isLoading etc. überall rein? -> ja
+state onChange direkt in ändern ohne handlerfunktion?
+github, commits?
+kein console.log, besser console.error etc.
+ */
+function LoginModal({isOpen, onClose, buttonName, option}) {
     const [logInSuccess, setLogInSuccess] = useState(false)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -56,7 +62,7 @@ function LoginModal2({isOpen, onClose, buttonName, option}) {
         onSuccess: (resp) => {
             localStorage.setItem('token', resp.token)
             _apiClient.authentications['token'].apiKey = localStorage.getItem('token');
-            queryClient.fetchQuery({queryKey: ['auth']}).catch(console.log)
+            queryClient.fetchQuery({queryKey: ['auth']}).catch(console.error)
             setLogInSuccess(true)
         },
         onError: (error) => {
@@ -161,4 +167,4 @@ function LoginModal2({isOpen, onClose, buttonName, option}) {
     )
 }
 
-export default LoginModal2
+export default LoginModal

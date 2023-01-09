@@ -48,7 +48,7 @@ function PasswordModal({isOpen, onClose}) {
     const queryClient = useQueryClient()
     const passwordEmpty = password === ''
     const usernameEmpty = username === ''
-    const errorCodes = {UserNotFoundError: 'User not found.', PasswordIncorrectError: 'Password not correct. Try again.', User}
+    const errorCodes = {UserNotFoundError: 'User not found.', PasswordIncorrectError: 'Password not correct. Try again.'}
 
     const {mutate: login, isLoading} = useMutation(tryLogin, {
         onSuccess: (resp) => {
