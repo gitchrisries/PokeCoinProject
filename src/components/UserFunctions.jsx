@@ -5,12 +5,10 @@ import LoginModal from "./LoginModal";
 import PasswordModal from "./PasswordModal";
 import {_apiClient} from "../helpers/globals";
 import {UnlockIcon, RepeatIcon, AddIcon, CloseIcon} from "@chakra-ui/icons";
-import {useQueryClient} from "@tanstack/react-query";
 
 
 function UserFunctions() {
     const {loggedIn, setLoggedIn} = useContext(LoggedContext)
-    const queryClient = useQueryClient()
     const {isOpen: isOpenLogin, onOpen: onOpenLogin, onClose: onCloseLogin} = useDisclosure()
     const {isOpen: isOpenReg, onOpen: onOpenReg, onClose: onCloseReg} = useDisclosure()
     const {isOpen: isOpenPw, onOpen: onOpenPw, onClose: onClosePw} = useDisclosure()
@@ -19,8 +17,8 @@ function UserFunctions() {
         setLoggedIn(false);
         localStorage.removeItem('token')
         _apiClient.authentications['token'].apiKey = '';
-        queryClient.invalidateQueries({queryKey: ['walletBalance']}).catch(console.error)
     }
+
     return (
         <>
             <Menu>
