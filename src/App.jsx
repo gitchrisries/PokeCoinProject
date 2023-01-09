@@ -20,8 +20,6 @@ import {HeaderBar} from "./components/Layout/Header";
 
 
 function App() {
-    const {loggedIn} = useContext(LoggedContext)
-    const [walletBalance, setWalletBalance] = useState('');
 
     const theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
