@@ -20,7 +20,8 @@ import {HeaderBar} from "./components/Layout/Header";
 
 
 function App() {
-
+    const {loggedIn} = useContext(LoggedContext)
+    const [walletBalance, setWalletBalance] = useState('');
 
     const theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
@@ -35,11 +36,13 @@ function App() {
                 navbarOffsetBreakpoint="sm"
                 asideOffsetBreakpoint="sm"
                 navbar={
+
                     <NavBar opened={opened}/>
                 }
 
                 header={
                     <HeaderBar opened={opened} setOpened={setOpened} theme={theme}/>
+
                 }>
                 <Routes>
                     <Route path='/mining' element={<MiningPage/>}/>

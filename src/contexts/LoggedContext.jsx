@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
-import {UsersApi} from "../clients/pokecoin/src";
+import {ApiClient, UsersApi} from "../clients/pokecoin/src";
 import {_apiClient} from "../helpers/globals";
 
 const userApi = new UsersApi(_apiClient);
@@ -11,6 +11,8 @@ export const LoggedContextProvider = ({ children }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
+    const token = _apiClient?.authentications['token'].apiKey
+
     useQuery(['auth'],
         async () => {
             setIsLoading(true);
@@ -18,7 +20,7 @@ export const LoggedContextProvider = ({ children }) => {
         }, {
             onSuccess: () => {setIsLoading(false); setLoggedIn(true); },
             onError: () => {setIsLoading(false); setLoggedIn(false); },
-            enabled: false
+            enabled: !!token
         }
     );
 
@@ -27,7 +29,7 @@ export const LoggedContextProvider = ({ children }) => {
             value={{
                 loggedIn,
                 setLoggedIn,
-                isLoading
+                isLoading,
             }}
         >
             {children}
