@@ -10,6 +10,7 @@ const cardApi = new CardsApi(_apiClient)
 function ShowCardsPage() {
     const [userCardsCountDict, setUserCardsCountDict] = useState(null)
     const [allCards, setAllCards] = useState(null)
+    const [tabIndex, setTabIndex] = useState(0)
 
     useQuery(['userCards'],
         async () => {
@@ -54,28 +55,51 @@ function ShowCardsPage() {
     }
 
     return (
-            <div style={{margin: '10px 60px 60px 60px', position: 'relative'}}>
-                {userCardsCountDict && allCards &&
-                    <Tabs variant='soft-rounded' colorScheme='blue'>
-                        <HStack style={{margin: '0% 0% 2% 4%'}}>
-                            <TabList gap={1}>
-                                <Tab>All Cards</Tab>
-                            </TabList>
-                            <Spacer/>
-                            <Box padding='3px' width='200px' bg='#0398fc' style={{
-                                textAlign: 'center',
-                                borderRadius: 6,
-                                color: 'white'
-                            }}>
-                                Owned Cards: {Object.keys(userCardsCountDict).length}/{Object.keys(allCards).length}
-                            </Box>
-                        </HStack>
-                        <div style={{margin: '4%'}}>
-                                <CardGrid allCards={allCards} userCards={userCardsCountDict}/>
-                        </div>
-                    </Tabs>
-                }
-            </div>
+        <div style={{margin: '10px 60px 60px 60px', position: 'relative'}}>
+            {userCardsCountDict && allCards &&
+                <Tabs variant='soft-rounded' colorScheme='blue' onChange={(index) => setTabIndex(index)}>
+                    <HStack style={{margin: '0% 0% 2% 4%'}}>
+                        <TabList gap={1}>
+                            <Tab>All Cards</Tab>
+                            <Tab>My Cards</Tab>
+                            <Tab>Rare Cards</Tab>
+                            <Tab>Uncommon Cards</Tab>
+                            <Tab>Common Cards</Tab>
+                        </TabList>
+                        <Spacer/>
+                        <Box padding='3px' width='200px' bg='#0398fc' style={{
+                            textAlign: 'center',
+                            borderRadius: 6,
+                            color: 'white'
+                        }}>
+                            Owned Cards: {Object.keys(userCardsCountDict).length}/{Object.keys(allCards).length}
+                        </Box>
+                    </HStack>
+                    <div style={{margin: '4%'}}>
+                        {tabIndex === 0 &&
+                            <CardGrid allCards={allCards} userCards={userCardsCountDict}
+                                      filtered={Object.keys(allCards)}/>
+                        }
+                        {tabIndex === 1 &&
+                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                      filtered={Object.keys(allCards).filter(id => id in userCardsCountDict)}/>
+                        }
+                        {tabIndex === 2 &&
+                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                      filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Rare')}/>
+                        }
+                        {tabIndex === 3 &&
+                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                      filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Uncommon')}/>
+                        }
+                        {tabIndex === 4 &&
+                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                      filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Common')}/>
+                        }
+                    </div>
+                </Tabs>
+            }
+        </div>
     )
 }
 
