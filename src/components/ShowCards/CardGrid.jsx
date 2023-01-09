@@ -25,11 +25,11 @@ function GridSkeleton({allCards, userCards, id}) {
                     <PopoverTrigger>
                         <LinkBox maxW={'230px'} borderWidth={4} borderRadius='lg'
                                  borderColor={rarityColor[allCards[id].rarity]}>
-                            <LinkOverlay href='javascript:void(0)'>
+                            <Box cursor={'pointer'}>
                                 <Img loading={'lazy'} fallback={fallBack}
                                      onLoad={() => setImgLoaded(true)} src={allCards[id].imageUrl} alt={id}
                                      borderRadius='3.8'/>
-                            </LinkOverlay>
+                            </Box>
                         </LinkBox>
                     </PopoverTrigger>
                     <PopoverContent bg={'blue.900'} borderWidth={3}>
@@ -52,22 +52,8 @@ function GridSkeleton({allCards, userCards, id}) {
 }
 
 function CardGrid({allCards, userCards, filtered}) {
-    const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        setIsLoading(false)
-    }, [])
-
-    return (isLoading ?
-            <Center marginTop={250}>
-                <Spinner
-                    thickness='4px'
-                    speed='0.65s'
-                    emptyColor='gray.200'
-                    color='blue.500'
-                    size='xl'
-                />
-            </Center> :
+    return (
             <Grid templateColumns='repeat(4, 1fr)' gap={6}>
                 {filtered.map(id => {
                     return <GridSkeleton key={id} id={id} userCards={userCards} allCards={allCards}/>
