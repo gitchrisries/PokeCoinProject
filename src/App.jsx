@@ -18,7 +18,10 @@ import {
     Route,
     Routes
 } from 'react-router-dom'
-import logo from './images/pokecoins_lable.png'
+
+import Login from "./components/Login";
+import logo from './assets/pokecoins_lable.png'
+
 import BuyPackagePage from "./pages/BuyPackagePage";
 import React from "react";
 import {_apiClient} from "./helpers/globals";
@@ -32,7 +35,8 @@ import UserFunctions from "./components/UserFunctions";
 const walletApi = new WalletApi(_apiClient)
 
 function App() {
-    const {loggedIn} = useContext(LoggedContext)
+
+    const {loggedIn} = React.useContext(LoggedContext);
 
     const {data: walletBalance} = useQuery(['walletBalance'],
         async () => {
