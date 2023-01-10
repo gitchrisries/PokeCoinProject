@@ -24,7 +24,7 @@ export const HeaderBar=(props)=>{
     )
 
     return(
-        <Header height={{base: 50, md: 70}} p="md">
+        <Header height={{base: 70, md: 70}} p="md">
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <MediaQuery largerThan="sm" styles={{display: 'none'}}>
                     <Burger
@@ -37,7 +37,7 @@ export const HeaderBar=(props)=>{
                 </MediaQuery>
 
                 <Image src={logo} alt='PokeCoins' c='white' width='150px'/>
-                {walletBalance?<Box bg='#0398fc' pl='10px' pr='10px'  style={{
+                {loggedIn?<Box bg='#0398fc' pl='10px' pr='10px'  style={{
                     textAlign: 'center',
                     borderRadius: 6,
                     paddingTop: 1,
