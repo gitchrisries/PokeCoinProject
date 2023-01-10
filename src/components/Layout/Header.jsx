@@ -43,7 +43,7 @@ export const HeaderBar=(props)=>{
                     paddingTop: 1,
                     marginLeft: 10
                 }}>
-                <Text color='white' mt='6px' fw={600}>Wallet Balance: {walletBalance?.amount}</Text>
+                <Text color='white' mt='6px' fw={600}>Wallet Balance: {loggedIn ? walletBalance?.amount : ''}</Text>
                 </Box>:<></>}
                 <UserFunctions/>
             </div>

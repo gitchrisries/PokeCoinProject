@@ -23,9 +23,9 @@ onmessage = ({data: {previousHash, difficulty}}) => {
             nonce
         }
 
-        if (nonce === Number.MAX_SAFE_INTEGER) {
-            nonce = 0
-            timestamp = Date.now()
+        if (nonce === 200000) {
+            postMessage('getNewLastBlock')
+            return
         }
 
         newHash = calculateHash(newBlock)
