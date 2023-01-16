@@ -1,58 +1,58 @@
 import {_apiClient} from "../helpers/globals";
 import {CardsApi} from "../clients/pokecoin/src";
-import {useQuery} from "@tanstack/react-query";
-import React, {useEffect, useState} from "react";
-import {Tabs, Tab, HStack, TabList, Spacer, Box, Text, Button, Spinner} from "@chakra-ui/react"
+import {useQueries, useQuery, useQueryClient} from "@tanstack/react-query";
+import React,{useState} from "react";
+import {Tabs, Tab, HStack, TabList, Spacer, Box} from "@chakra-ui/react"
 import CardGrid from "../components/ShowCards/CardGrid";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 const cardApi = new CardsApi(_apiClient)
 
 function ShowCardsPage() {
+    const [userCardsCountDict, setUserCardsCountDict] = useState(null)
+    const [allCards, setAllCards] = useState(null)
     const [tabIndex, setTabIndex] = useState(0)
-    const [userCardsCountDict, setUserCardsCountDict] = useState(null);
-    const [allCards, setAllCards] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
-
 
     useQuery(['userCards'],
         async () => {
             return await cardApi.cardsUsercardsGet();
         }, {
             onSuccess: (data) => {
-                const temp = {};
-                console.log(data)
+                const temp = {}
                 data.forEach((obj) => {
-                    temp[obj.cardId] = (temp[obj.cardId] || 0) + 1;
-                });
-                setUserCardsCountDict(temp);
-
+                    temp[obj.cardId] = (temp[obj.cardId] || 0) + 1
+                })
+                setUserCardsCountDict(temp)
             }
         }
-    );
+    )
 
-    useEffect(()=>{
-        fetchMoreCards();
-    },[]);
-
-
-
-    const fetchMoreCards = () => {
-        setTimeout(async () => {
-            const resp = await cardApi.cardsGet({page: currentPage})
-            const _allCards={}
-            resp.cards.forEach((card) => {
-                    _allCards[card.id] = card;
-                });
-            console.log(_allCards)
-            setAllCards(lastCards => [...lastCards, ...Object.values(_allCards)])
-            setCurrentPage(prevPage => prevPage + 1);
-            if (resp.cards.length === 0) {
-                setHasMore(false);
+    //Was ist daran besser als mehrere useQuery?
+    //Sollen wir davon ausgehen, dass wir die Pageanzahl wissen?
+    const allCardsQueries = useQueries({
+        queries: [
+            {
+                queryKey: ['cards', 0], queryFn: async () => {
+                    return await cardApi.cardsGet({page: 0})
+                }
+            },
+            {
+                queryKey: ['cards', 1], queryFn: async () => {
+                    return await cardApi.cardsGet({page: 1})
+                }
+            },
+            {
+                queryKey: ['cards', 2], queryFn: async () => {
+                    return await cardApi.cardsGet({page: 2})
+                }
             }
-        },1500)}
+        ]
+    })
 
+    if (allCardsQueries.every(resp => !resp.isLoading) && !allCards) {
+        const _allCards = {}
+        allCardsQueries.forEach(resp => resp.data.cards.forEach((card => _allCards[card.id] = card)))
+        setAllCards(_allCards)
+    }
 
     return (
         <div style={{margin: '10px 60px 60px 60px', position: 'relative'}}>
@@ -74,46 +74,33 @@ function ShowCardsPage() {
                         }}>
                             Owned Cards: {Object.keys(userCardsCountDict).length}/{Object.keys(allCards).length}
                         </Box>
-
                     </HStack>
-
-
-                        <InfiniteScroll
-                                    dataLength={Object.keys(allCards).length}
-                                    hasMore={hasMore}
-                                    next={fetchMoreCards}
-                                    loader={<Spinner iscentered='true' color='white'/>}
-                                >
-                            <div style={{margin: '4%'}}>
-
-                                {tabIndex === 0 &&
-                                    <CardGrid allCards={allCards} userCards={userCardsCountDict}
-                                              filtered={Object.keys(allCards)}/>
-                                }
-                                {tabIndex === 1 &&
-                                    <CardGrid userCards={userCardsCountDict} allCards={allCards}
-                                              filtered={Object.keys(allCards).filter(id => id in userCardsCountDict)}/>
-                                }
-                                {tabIndex === 2 &&
-                                    <CardGrid userCards={userCardsCountDict} allCards={allCards}
-                                              filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Rare')}/>
-                                }
-                                {tabIndex === 3 &&
-                                    <CardGrid userCards={userCardsCountDict} allCards={allCards}
-                                              filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Uncommon')}/>
-                                }
-                                {tabIndex === 4 &&
-                                    <CardGrid userCards={userCardsCountDict} allCards={allCards}
-                                              filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Common')}/>
-                                }
-                            </div>
-                        </InfiniteScroll>
-
-
+                    <div style={{margin: '4%'}}>
+                        {tabIndex === 0 &&
+                            <CardGrid allCards={allCards} userCards={userCardsCountDict}
+                                      filtered={Object.keys(allCards)}/>
+                        }
+                        {tabIndex === 1 &&
+                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                      filtered={Object.keys(allCards).filter(id => id in userCardsCountDict)}/>
+                        }
+                        {tabIndex === 2 &&
+                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                      filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Rare')}/>
+                        }
+                        {tabIndex === 3 &&
+                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                      filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Uncommon')}/>
+                        }
+                        {tabIndex === 4 &&
+                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                      filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Common')}/>
+                        }
+                    </div>
                 </Tabs>
             }
         </div>
     )
 }
 
-export default ShowCardsPage
+export default ShowCardsPage;

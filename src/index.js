@@ -12,9 +12,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 const queryClient = new QueryClient();
 
 root.render(
-/*
     <React.StrictMode>
-*/
         <QueryClientProvider client={queryClient}>
             <MantineProvider theme={{colorScheme: 'dark'}}>
                 <ChakraProvider>
@@ -24,9 +22,7 @@ root.render(
                 </ChakraProvider>
             </MantineProvider>
         </QueryClientProvider>
-/*
     </React.StrictMode>
-*/
 )
 ;
 
