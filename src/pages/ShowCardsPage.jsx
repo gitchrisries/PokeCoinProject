@@ -10,8 +10,8 @@ const cardApi = new CardsApi(_apiClient)
 
 function ShowCardsPage() {
     const [tabIndex, setTabIndex] = useState(0)
-    const [userCardsCountDict, setUserCardsCountDict] = useState([]);
-    const [allCards, setAllCards] = useState([]);
+    const [userCardsCountDict, setUserCardsCountDict] = useState(null);
+    const [allCards, setAllCards] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
@@ -22,7 +22,6 @@ function ShowCardsPage() {
         }, {
             onSuccess: (data) => {
                 const temp = {};
-                console.log(data)
                 data.forEach((obj) => {
                     temp[obj.cardId] = (temp[obj.cardId] || 0) + 1;
                 });
@@ -44,14 +43,13 @@ function ShowCardsPage() {
             resp.cards.forEach((card) => {
                 _allCards[card.id] = card;
             });
-            console.log(allCards)
-            setAllCards(lastCards => [...lastCards, ...Object.values(_allCards)])
+            let combined = {};
+            setAllCards(Object.assign(combined,allCards,_allCards))
             setCurrentPage(prevPage => prevPage + 1);
             if (resp.cards.length === 0) {
                 setHasMore(false);
             }
         },1500)}
-
 
     return (
         <div style={{margin: '10px 60px 60px 60px', position: 'relative'}}>
