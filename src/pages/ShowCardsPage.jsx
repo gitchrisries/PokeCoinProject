@@ -2,7 +2,7 @@ import {_apiClient} from "../helpers/globals";
 import {CardsApi} from "../clients/pokecoin/src";
 import {useQuery} from "@tanstack/react-query";
 import React, {useEffect, useState} from "react";
-import {Tabs, Tab, HStack, TabList, Spacer, Box, Text} from "@chakra-ui/react"
+import {Tabs, Tab, HStack, TabList, Spacer, Box, Text, Button, Spinner} from "@chakra-ui/react"
 import CardGrid from "../components/ShowCards/CardGrid";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -10,7 +10,7 @@ const cardApi = new CardsApi(_apiClient)
 
 function ShowCardsPage() {
     const [tabIndex, setTabIndex] = useState(0)
-    const [userCardsCountDict, setUserCardsCountDict] = useState(null);
+    const [userCardsCountDict, setUserCardsCountDict] = useState([]);
     const [allCards, setAllCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
@@ -22,6 +22,7 @@ function ShowCardsPage() {
         }, {
             onSuccess: (data) => {
                 const temp = {};
+                console.log(data)
                 data.forEach((obj) => {
                     temp[obj.cardId] = (temp[obj.cardId] || 0) + 1;
                 });
@@ -30,61 +31,26 @@ function ShowCardsPage() {
         }
     );
 
- 
-/*    const fetchMoreCards = () => {
-            console.log("Test")
-            setTimeout(async ()=> {
-            const _allCards = {};
+    useEffect(()=>{
+        fetchMoreCards();
+    },[]);
+
+
+
+    const fetchMoreCards = () => {
+        setTimeout(async () => {
             const resp = await cardApi.cardsGet({page: currentPage})
-            resp.data.cards.forEach((card) => {
-                _allCards[card.id] = card;
-            });
-            setAllCards(lastCards => [...lastCards, ..._allCards]);
-            setCurrentPage(prevPage => prevPage + 1);
-            if (resp.data.cards.length === 0) {
-                setHasMore(false);
-            }
-
-        }, 1000);
-    }*/
-
-    const fetchMoreCards = async() => {
-        console.log("Test")
-        /*setTimeout(async ()=> {*/
-            // const _allCards = {};
-            // const resp = await cardApi.cardsGet({page: currentPage}).then(()=> {
-            //     resp.cards.forEach((card) => {
-            //         _allCards[card.id] = card;
-            //     });
-            //     setAllCards(_allCards);
-            //     console.log(resp.cards)
-            //     setCurrentPage(currentPage + 1);
-            //     if (resp.cards.length === 0) {
-            //         setHasMore(false);
-            //     }
-            // })
-       /* }, 1000);*/
-    }
-
-/*    const Fetcher = () => {
-        setTimeout(async ()=>{
-            const _allCards = {}
-            const resp = await cardApi.cardsGet({page:currentPage})
+            const _allCards={}
             resp.cards.forEach((card) => {
                 _allCards[card.id] = card;
-                setCurrentPage(currentPage+1)
-            })
-                setAllCards([...allCards, _allCards])
-                if(resp.cards.length===0) return;
-                console.log(allCards)
-        },1000)
-
-
-    }*/
-
-
-
-
+            });
+            console.log(allCards)
+            setAllCards(lastCards => [...lastCards, ...Object.values(_allCards)])
+            setCurrentPage(prevPage => prevPage + 1);
+            if (resp.cards.length === 0) {
+                setHasMore(false);
+            }
+        },1500)}
 
 
     return (
@@ -107,20 +73,18 @@ function ShowCardsPage() {
                         }}>
                             Owned Cards: {Object.keys(userCardsCountDict).length}/{Object.keys(allCards).length}
                         </Box>
+
                     </HStack>
+
+
                     <InfiniteScroll
-                                dataLength={Object.keys(allCards).length}
-                                next={fetchMoreCards}
-                                hasMore={hasMore}
-                                loader={<Text color='white'>Loading...</Text>}
-                            >
-
-
-                       {allCards.map(card=>{
-                           <Text color='white'>{card}</Text>
-                       })}
-
+                        dataLength={Object.keys(allCards).length}
+                        hasMore={hasMore}
+                        next={fetchMoreCards}
+                        loader={<Spinner iscentered='true' color='white'/>}
+                    >
                         <div style={{margin: '4%'}}>
+
                             {tabIndex === 0 &&
                                 <CardGrid allCards={allCards} userCards={userCardsCountDict}
                                           filtered={Object.keys(allCards)}/>
@@ -141,9 +105,10 @@ function ShowCardsPage() {
                                 <CardGrid userCards={userCardsCountDict} allCards={allCards}
                                           filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Common')}/>
                             }
-
                         </div>
                     </InfiniteScroll>
+
+
                 </Tabs>
             }
         </div>
