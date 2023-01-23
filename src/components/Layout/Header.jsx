@@ -5,7 +5,7 @@ import {LoggedContext} from "../../contexts/LoggedContext";
 import {useQuery} from "@tanstack/react-query";
 import {WalletApi} from "../../clients/pokecoin/src";
 import {_apiClient} from "../../helpers/globals";
-import UserFunctions from "../UserFunctions";
+import UserFunctions from "../UserManagement/UserFunctions";
 
 const walletApi = new WalletApi(_apiClient)
 
@@ -37,13 +37,13 @@ export const HeaderBar=(props)=>{
                 </MediaQuery>
 
                 <Image src={logo} alt='PokeCoins' c='white' width='150px'/>
-                {walletBalance?<Box bg='#0398fc' pl='10px' pr='10px'  style={{
+                {loggedIn && walletBalance ? <Box bg='#0398fc' pl='10px' pr='10px'  style={{
                     textAlign: 'center',
                     borderRadius: 6,
                     paddingTop: 1,
                     marginLeft: 10
                 }}>
-                <Text color='white' mt='6px' fw={600}>Wallet Balance: {loggedIn ? walletBalance?.amount : ''}</Text>
+                <Text color='white' mt='6px' fw={600}>Wallet Balance: {walletBalance?.amount}</Text>
                 </Box>:<></>}
                 <UserFunctions/>
             </div>

@@ -15,7 +15,7 @@ import BuyPackagePage from "./pages/BuyPackagePage";
 import React from "react";
 import ShowCardsPage from "./pages/ShowCardsPage";
 import MiningPage from "./pages/MiningPage";
-import LoginModal from "./components/LoginModal";
+import LoginRegisterModal from "./components/UserManagement/LoginRegisterModal";
 import {HeaderBar} from "./components/Layout/Header";
 
 
@@ -46,7 +46,7 @@ function App() {
                     <Route path='/mining' element={<MiningPage/>}/>
                     <Route path='/buying' element={<BuyPackagePage/>}/>
                     <Route path='/cards' element={<ShowCardsPage/>}/>
-                    <Route path='/login' element={<LoginModal/>}/>
+                    <Route path='/login' element={<LoginRegisterModal/>}/>
                 </Routes>
             </AppShell>
         </Router>

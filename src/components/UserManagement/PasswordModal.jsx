@@ -17,12 +17,11 @@ import {
     InputLeftElement, ModalCloseButton, InputRightElement
 } from "@chakra-ui/react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {_apiClient} from "../helpers/globals";
-import {UsersApi} from "../clients/pokecoin/src";
+import {_apiClient} from "../../helpers/globals";
+import {UsersApi} from "../../clients/pokecoin/src";
 import {useEffect, useState} from "react";
 import {HiOutlineKey, HiOutlineEye, HiOutlineEyeOff} from "react-icons/hi"
 import SuccessModalContent from "./SuccessModalContent";
-
 
 const userApi = new UsersApi(_apiClient)
 
@@ -31,23 +30,22 @@ function PasswordModal({isOpen, onClose}) {
     const [pwChangeSuccess, setPwChangeSuccess] = useState(false)
     const [oldPassword, setOldPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
-    const [logInError, setLogInError] = useState('')
+    const [requestError, setRequestError] = useState('')
     const [showCurrentPassword, setShowCurrentPassword] = useState(false)
     const [showNewPassword, setShowNewPassword] = useState(false)
     const newPasswordEmpty = newPassword === ''
     const oldPasswordEmpty = oldPassword === ''
-    const errorCodes = {UserNotFoundError: 'User not found.', PasswordIncorrectError: 'Password not correct. Try again.'}
 
     const {mutate: changePassword, isLoading} = useMutation(tryChangePassword, {
         onSuccess: (resp) => {
             setPwChangeSuccess(true)
         },
         onError: (error) => {
-            if (error.status === 400) {
-                setLogInError(errorCodes[error.body.code])
+            if(error.body?.message){
+                setRequestError(error.body.message)
             }
-            if (error.status === 500) {
-                setLogInError('Unexpected server error. Try again.')
+            else{
+                setRequestError('An unexpected error occured. Please try again!')
             }
         }
     })
@@ -63,7 +61,7 @@ function PasswordModal({isOpen, onClose}) {
 
     useEffect(() => {
         if (!isOpen) {
-            setLogInError('')
+            setRequestError('')
             setOldPassword('')
             setNewPassword('')
         }
@@ -79,17 +77,17 @@ function PasswordModal({isOpen, onClose}) {
                     <>
                         <ModalHeader textAlign={'center'} fontWeight={'bold'} fontSize={'1.7rem'}
                                      color={'white'}>Change Password</ModalHeader>
-                        {logInError &&
+                        {requestError &&
                             <Box bg={"#1e1e1e"} borderRadius={'0.4rem'}
                                  style={{margin: '0rem 1.5rem 0rem 1.5rem', textAlign: 'center'}}
                                  borderColor={"#E53E3E"} borderWidth={'2px'} padding={'0.5rem'}>
                                 <Text color={'white'}>Change Password failed.</Text>
-                                <Text color={'white'}>{logInError}</Text>
+                                <Text color={'white'}>{requestError}</Text>
                             </Box>
                         }
                         <form onSubmit={(e) => handleSubmit(e)}>
                             <ModalBody pb={4}>
-                                <FormControl isInvalid={oldPasswordEmpty}>
+                                <FormControl isInvalid={oldPasswordEmpty} isRequired>
                                     <FormLabel color={'white'}>Current password</FormLabel>
                                     <InputGroup>
                                         <InputLeftElement pointerEvents='none'
@@ -108,7 +106,7 @@ function PasswordModal({isOpen, onClose}) {
                                     {!oldPasswordEmpty ? (<FormHelperText>Enter current Password.</FormHelperText>)
                                         : (<FormErrorMessage>Current password is required.</FormErrorMessage>)}
                                 </FormControl>
-                                <FormControl mt={4} isInvalid={newPasswordEmpty}>
+                                <FormControl mt={4} isInvalid={newPasswordEmpty} isRequired>
                                     <FormLabel color={'white'}>New password</FormLabel>
                                     <InputGroup>
                                         <InputLeftElement pointerEvents='none'
