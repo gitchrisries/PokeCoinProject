@@ -61,6 +61,7 @@ function ShowCardsPage() {
         },
         {
             onError: (error) => {
+                setIsLoading(false);
                 setError(true);
                 if(error.body?.message){
                     setErrorMessage(error.body.message)
