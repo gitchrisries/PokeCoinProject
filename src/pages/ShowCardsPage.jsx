@@ -1,20 +1,20 @@
 import {_apiClient} from "../helpers/globals";
 import {CardsApi} from "../clients/pokecoin/src";
 import {useQuery} from "@tanstack/react-query";
-import React, {useEffect, useState} from "react";
-import {Tabs, Tab, HStack, TabList, Spacer, Box, Text, Button, Spinner} from "@chakra-ui/react"
+import React, { useRef, useState} from "react";
+import {Tabs, Tab, HStack, TabList, Spacer, Box, Spinner, Center, Text} from "@chakra-ui/react"
 import CardGrid from "../components/ShowCards/CardGrid";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 const cardApi = new CardsApi(_apiClient)
 
 function ShowCardsPage() {
-    const [tabIndex, setTabIndex] = useState(0)
+    const [tabIndex, setTabIndex] = useState(0);
     const [userCardsCountDict, setUserCardsCountDict] = useState(null);
     const [allCards, setAllCards] = useState(null);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
-
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const pageNumber = useRef(0);
 
     useQuery(['userCards'],
         async () => {
@@ -27,29 +27,68 @@ function ShowCardsPage() {
                 });
                 setUserCardsCountDict(temp);
             }
+        },
+        {
+            onError: (error) => {
+                setError(true);
+                if(error.body?.message){
+                    setErrorMessage(error.body.message)
+                }
+                else{
+                    setErrorMessage('An unexpected error occurred. Please try again!')
+                }
+            }
         }
     );
 
-    useEffect(()=>{
-        fetchMoreCards();
-    },[]);
-
-
-
-    const fetchMoreCards = () => {
-        setTimeout(async () => {
-            const resp = await cardApi.cardsGet({page: currentPage})
-            const _allCards={}
-            resp.cards.forEach((card) => {
-                _allCards[card.id] = card;
-            });
-            let combined = {};
-            setAllCards(Object.assign(combined,allCards,_allCards))
-            setCurrentPage(prevPage => prevPage + 1);
-            if (resp.cards.length === 0) {
-                setHasMore(false);
+    useQuery(['allCards', pageNumber.current],
+        async () => {
+            return await cardApi.cardsGet({page: pageNumber.current});
+        }, {
+            onSuccess: (data) => {
+                setIsLoading(false);
+                if (data.cards.length === 0) {
+                    return;
+                }
+                pageNumber.current += 1
+                const _allCards={}
+                data.cards.forEach((card) => {
+                    _allCards[card.id] = card;
+                });
+                let combined = {};
+                setAllCards(Object.assign(combined, allCards, _allCards));
             }
-        },1500)}
+        },
+        {
+            onError: (error) => {
+                setError(true);
+                if(error.body?.message){
+                    setErrorMessage(error.body.message)
+                }
+                else{
+                    setErrorMessage('An unexpected error occurred. Please try again!')
+                }
+            }
+        }
+    )
+
+    if(error){
+        return(
+            <Text c='white'>
+                {errorMessage}
+            </Text>
+        )
+    }
+
+    if(isLoading){
+        return(
+                <Center>
+                        <Spinner color='white'/>
+                </Center>
+            )
+    }
+
+
 
     return (
         <div style={{margin: '10px 60px 60px 60px', position: 'relative'}}>
@@ -74,13 +113,6 @@ function ShowCardsPage() {
 
                     </HStack>
 
-
-                    <InfiniteScroll
-                        dataLength={Object.keys(allCards).length}
-                        hasMore={hasMore}
-                        next={fetchMoreCards}
-                        loader={<Spinner iscentered='true' color='white'/>}
-                    >
                         <div style={{margin: '4%'}}>
 
                             {tabIndex === 0 &&
@@ -104,8 +136,6 @@ function ShowCardsPage() {
                                           filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Common')}/>
                             }
                         </div>
-                    </InfiniteScroll>
-
 
                 </Tabs>
             }
