@@ -16,7 +16,7 @@ import {
     Box,
     InputLeftElement, ModalCloseButton, InputRightElement
 } from "@chakra-ui/react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query";
 import {_apiClient, defaultErrorText} from "../../helpers/globals";
 import {UsersApi} from "../../clients/pokecoin/src";
 import {useEffect, useState} from "react";
