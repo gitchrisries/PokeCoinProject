@@ -17,7 +17,7 @@ import {
     InputLeftElement, ModalCloseButton, InputRightElement
 } from "@chakra-ui/react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {_apiClient} from "../../helpers/globals";
+import {_apiClient, defaultErrorText} from "../../helpers/globals";
 import {UsersApi} from "../../clients/pokecoin/src";
 import {useEffect, useState} from "react";
 import {HiOutlineKey, HiOutlineEye, HiOutlineEyeOff} from "react-icons/hi"
@@ -45,7 +45,7 @@ function PasswordModal({isOpen, onClose}) {
                 setRequestError(error.body.message)
             }
             else{
-                setRequestError('An unexpected error occured. Please try again!')
+                setRequestError(defaultErrorText)
             }
         }
     })
