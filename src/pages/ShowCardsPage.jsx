@@ -1,58 +1,95 @@
 import {_apiClient} from "../helpers/globals";
 import {CardsApi} from "../clients/pokecoin/src";
-import {useQueries, useQuery, useQueryClient} from "@tanstack/react-query";
-import React,{useState} from "react";
-import {Tabs, Tab, HStack, TabList, Spacer, Box} from "@chakra-ui/react"
+import {useQuery} from "@tanstack/react-query";
+import React, { useRef, useState} from "react";
+import {Tabs, Tab, HStack, TabList, Spacer, Box, Spinner, Center, Text} from "@chakra-ui/react"
 import CardGrid from "../components/ShowCards/CardGrid";
 
 const cardApi = new CardsApi(_apiClient)
 
 function ShowCardsPage() {
-    const [userCardsCountDict, setUserCardsCountDict] = useState(null)
-    const [allCards, setAllCards] = useState(null)
-    const [tabIndex, setTabIndex] = useState(0)
+    const [tabIndex, setTabIndex] = useState(0);
+    const [userCardsCountDict, setUserCardsCountDict] = useState(null);
+    const [allCards, setAllCards] = useState(null);
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const pageNumber = useRef(0);
 
     useQuery(['userCards'],
         async () => {
             return await cardApi.cardsUsercardsGet();
         }, {
             onSuccess: (data) => {
-                const temp = {}
+                const temp = {};
                 data.forEach((obj) => {
-                    temp[obj.cardId] = (temp[obj.cardId] || 0) + 1
-                })
-                setUserCardsCountDict(temp)
+                    temp[obj.cardId] = (temp[obj.cardId] || 0) + 1;
+                });
+                setUserCardsCountDict(temp);
+            }
+        },
+        {
+            onError: (error) => {
+                setError(true);
+                if(error.body?.message){
+                    setErrorMessage(error.body.message)
+                }
+                else{
+                    setErrorMessage('An unexpected error occurred. Please try again!')
+                }
+            }
+        }
+    );
+
+    useQuery(['allCards', pageNumber.current],
+        async () => {
+            return await cardApi.cardsGet({page: pageNumber.current});
+        }, {
+            onSuccess: (data) => {
+                setIsLoading(false);
+                if (data.cards.length === 0) {
+                    return;
+                }
+                pageNumber.current += 1
+                const _allCards={}
+                data.cards.forEach((card) => {
+                    _allCards[card.id] = card;
+                });
+                let combined = {};
+                setAllCards(Object.assign(combined, allCards, _allCards));
+            }
+        },
+        {
+            onError: (error) => {
+                setIsLoading(false);
+                setError(true);
+                if(error.body?.message){
+                    setErrorMessage(error.body.message)
+                }
+                else{
+                    setErrorMessage('An unexpected error occurred. Please try again!')
+                }
             }
         }
     )
 
-    //Was ist daran besser als mehrere useQuery?
-    //Sollen wir davon ausgehen, dass wir die Pageanzahl wissen?
-    const allCardsQueries = useQueries({
-        queries: [
-            {
-                queryKey: ['cards', 0], queryFn: async () => {
-                    return await cardApi.cardsGet({page: 0})
-                }
-            },
-            {
-                queryKey: ['cards', 1], queryFn: async () => {
-                    return await cardApi.cardsGet({page: 1})
-                }
-            },
-            {
-                queryKey: ['cards', 2], queryFn: async () => {
-                    return await cardApi.cardsGet({page: 2})
-                }
-            }
-        ]
-    })
-
-    if (allCardsQueries.every(resp => !resp.isLoading) && !allCards) {
-        const _allCards = {}
-        allCardsQueries.forEach(resp => resp.data.cards.forEach((card => _allCards[card.id] = card)))
-        setAllCards(_allCards)
+    if(error){
+        return(
+            <Text c='white'>
+                {errorMessage}
+            </Text>
+        )
     }
+
+    if(isLoading){
+        return(
+            <Center>
+                <Spinner color='white'/>
+            </Center>
+        )
+    }
+
+
 
     return (
         <div style={{margin: '10px 60px 60px 60px', position: 'relative'}}>
@@ -74,8 +111,11 @@ function ShowCardsPage() {
                         }}>
                             Owned Cards: {Object.keys(userCardsCountDict).length}/{Object.keys(allCards).length}
                         </Box>
+
                     </HStack>
+
                     <div style={{margin: '4%'}}>
+
                         {tabIndex === 0 &&
                             <CardGrid allCards={allCards} userCards={userCardsCountDict}
                                       filtered={Object.keys(allCards)}/>
@@ -97,10 +137,11 @@ function ShowCardsPage() {
                                       filtered={Object.keys(allCards).filter(id => allCards[id].rarity === 'Common')}/>
                         }
                     </div>
+
                 </Tabs>
             }
         </div>
     )
 }
 
-export default ShowCardsPage;
+export default ShowCardsPage
