@@ -12,7 +12,7 @@ const calculateHash = (block) => {
 
 onmessage = ({data: {previousHash, difficulty}}) => {
     let timestamp = Date.now()
-    let newBlock = ''
+    let newBlock = {}
     let newHash = ''
 
     for (let nonce = 0; nonce <= Number.MAX_SAFE_INTEGER; nonce++) {
@@ -23,7 +23,8 @@ onmessage = ({data: {previousHash, difficulty}}) => {
             nonce
         }
 
-        if (nonce === 200000) {
+        // Restart worker every 10 seconds to get new last block
+        if (Date.now() - timestamp > 10000) {
             postMessage('getNewLastBlock')
             return
         }

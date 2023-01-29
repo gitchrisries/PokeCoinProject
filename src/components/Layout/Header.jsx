@@ -1,4 +1,4 @@
-import {Burger, Header, Image, MediaQuery, Text, Box} from "@mantine/core";
+import {Burger, Header, Image, MediaQuery, Text, Box, Flex} from "@mantine/core";
 import logo from "../../assets/pokecoins_lable.png";
 import React from "react";
 import {LoggedContext} from "../../contexts/LoggedContext";
@@ -10,7 +10,7 @@ import UserFunctions from "../UserFunctions";
 const walletApi = new WalletApi(_apiClient)
 
 
-export const HeaderBar=(props)=>{
+export const HeaderBar = (props) => {
     const {loggedIn} = React.useContext(LoggedContext);
 
     const {data: walletBalance} = useQuery(['walletBalance'],
@@ -23,9 +23,9 @@ export const HeaderBar=(props)=>{
         }
     )
 
-    return(
+    return (
         <Header height={{base: 70, md: 70}} p="md">
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
                 <MediaQuery largerThan="sm" styles={{display: 'none'}}>
                     <Burger
                         opened={props.opened}
@@ -36,16 +36,15 @@ export const HeaderBar=(props)=>{
                     />
                 </MediaQuery>
 
-                <Image src={logo} alt='PokeCoins' c='white' width='150px'/>
-                {loggedIn?<Box bg='#0398fc' pl='10px' pr='10px'  style={{
-                    textAlign: 'center',
-                    borderRadius: 6,
-                    paddingTop: 1,
-                    marginLeft: 10
-                }}>
-                <Text color='white' mt='6px' fw={600}>Wallet Balance: {loggedIn ? walletBalance?.amount : ''}</Text>
-                </Box>:<></>}
-                <UserFunctions/>
+                <Image style={{justifySelf: 'flex-start', marginRight: 'auto'}} src={logo} alt='PokeCoins' c='white'
+                       width='150px'/>
+                {loggedIn &&
+                    <Flex pl={'0.8vw'} pr={'0.8vw'} style={{marginLeft: 'auto'}}>
+                        <Text style={{margin: 'auto'}} fw={600} color='white'>
+                            Wallet Balance: {walletBalance?.amount}</Text>
+                    </Flex>
+                }
+                <Box ml={'1vw'}><UserFunctions/></Box>
             </div>
             <div style={{display: 'flex', alignItems: 'center', height: '100%'}}>
             </div>
