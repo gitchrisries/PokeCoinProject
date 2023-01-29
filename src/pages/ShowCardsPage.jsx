@@ -100,8 +100,16 @@ function ShowCardsPage() {
                                       filtered={Object.keys(allCards)}/>
                         }
                         {tabIndex === 1 &&
-                            <CardGrid userCards={userCardsCountDict} allCards={allCards}
-                                      filtered={Object.keys(allCards).filter(id => id in userCardsCountDict)}/>
+                            <>
+                                {Object.keys(userCardsCountDict).length === 0 ?
+                                    <Center mt={'20vh'}>
+                                        <Text fontWeight={'semibold'} color={'white'}>You have no cards yet. Mine coins
+                                            and buy card packs to get cards.</Text>
+                                    </Center> :
+                                    <CardGrid userCards={userCardsCountDict} allCards={allCards}
+                                              filtered={Object.keys(allCards).filter(id => id in userCardsCountDict)}/>
+                                }
+                            </>
                         }
                         {tabIndex === 2 &&
                             <CardGrid userCards={userCardsCountDict} allCards={allCards}

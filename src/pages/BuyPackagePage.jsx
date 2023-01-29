@@ -31,7 +31,7 @@ const CardPackSelect = ({selectedPackage, setSelectedPackage, selectData}) => {
 function NewCardsGrid({newCards}) {
     return (
         newCards.map((card, index) => {
-            return <GridItem key={index + card.id + Date.now()}>
+            return <GridItem key={index + card.id}>
                 <Box borderWidth={4} borderRadius='lg' borderColor={rarityColor[card.rarity]}>
                     <Img src={card.imageUrl} alt={card.id} borderRadius='3.8'/>
                 </Box>

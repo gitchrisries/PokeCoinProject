@@ -25,13 +25,7 @@ export const LoggedContextProvider = ({ children }) => {
     );
 
     return (
-        <LoggedContext.Provider
-            value={{
-                loggedIn,
-                setLoggedIn,
-                isLoading,
-            }}
-        >
+        <LoggedContext.Provider value={{loggedIn, setLoggedIn, isLoading}}>
             {children}
         </LoggedContext.Provider>
     );
