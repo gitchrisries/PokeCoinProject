@@ -63,7 +63,7 @@ function ShowCardsPage() {
         return (
             <Center mt={'20vh'}>
                 <Text fontWeight={'semibold'}
-                      color={'white'}>{allCardsError.body.message || userCardsError.body.message}</Text>
+                      color={'white'}>{allCardsError?.body.message || userCardsError?.body.message}</Text>
                 <Text fontWeight={'semibold'} color={'white'}>Try reloading the page</Text>
             </Center>
         )

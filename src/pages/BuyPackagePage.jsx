@@ -6,9 +6,9 @@ import {
     NumberInput,
     NumberInputField,
     NumberInputStepper,
-    Text, useToast, VStack, Portal, Center, Grid, GridItem, Img
+    Text, useToast, VStack, Center, Grid, GridItem, Img
 } from "@chakra-ui/react";
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useRef, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CardsApi} from "../clients/pokecoin/src";
 import {_apiClient} from "../helpers/globals";
@@ -122,7 +122,7 @@ function BuyPackagePage() {
         return (
             <Center mt={'20vh'}>
                 <Text fontWeight={'semibold'}
-                      color={'white'}>{packageCostError.body.message || packageGetError.body.message}</Text>
+                      color={'white'}>{packageCostError?.body.message || packageGetError?.body.message}</Text>
                 <Text fontWeight={'semibold'} color={'white'}>Try reloading the page</Text>
             </Center>
         )

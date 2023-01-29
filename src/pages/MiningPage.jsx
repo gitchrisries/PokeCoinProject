@@ -186,7 +186,7 @@ function MiningPage() {
     if (difficultyError || lastBlockError) {
         return (
             <Center mt={'20vh'}>
-                <Text fontWeight={'semibold'} color={'white'}>{difficultyError.body.message || lastBlockError.body.message}</Text>
+                <Text fontWeight={'semibold'} color={'white'}>{difficultyError?.body.message || lastBlockError?.body.message}</Text>
                 <Text fontWeight={'semibold'} color={'white'}>Try reloading the page</Text>
             </Center>
         )

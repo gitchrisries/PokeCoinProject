@@ -9,18 +9,18 @@ function CardDetails({pokemon}) {
                         <div key={key + pokemon.id}>
                             <Text fontSize={'12'} fontWeight={'bold'}>Attacks</Text>
                             <hr style={{border: '0', borderTop: '2px solid white', margin: '2px 0px 2px 0px'}}/>
-                            {pokemon[key].map((attack) => {
+                            {pokemon[key].map((attack, index) => {
                                 return (
-                                    <>
+                                    <div key={attack + index}>
                                         <Text fontSize={'10'} fontWeight={'bold'}>{attack.name}</Text>
                                         <Text fontSize={'10'} as={'span'}>cost: </Text>
-                                        {attack.cost.map(cost => {
-                                            return <Text fontSize={'10'} as={'span'}>{cost}, </Text>
+                                        {attack.cost.map((cost, index) => {
+                                            return <Text key={index+cost} fontSize={'10'} as={'span'}>{cost}, </Text>
                                         })}
                                         <Text fontSize={'10'}>Converted Energy Cost: {attack.convertedEnergyCost}</Text>
                                         <Text fontSize={'10'}>Damage: {attack.damage}</Text>
                                         <Text fontSize={'10'}>Text: {attack.text}</Text>
-                                    </>
+                                    </div>
                                 )
                             })}
                             <hr style={{border: '0', borderTop: '2px solid white', margin: '2px 0px 2px 0px'}}/>
@@ -41,8 +41,8 @@ function CardDetails({pokemon}) {
                     return (
                         <div key={key + pokemon.id}>
                             <Text as={'span'} fontSize={'12'} fontWeight={'bold'}>Retreat Cost: </Text>
-                            {pokemon[key].map(cost => {
-                                return <Text as={'span'} fontSize={'10'}>{cost}, </Text>
+                            {pokemon[key].map((cost, index) => {
+                                return <Text key={cost+index} as={'span'} fontSize={'10'}>{cost}, </Text>
                             })}
                             <br/>
                         </div>
@@ -51,8 +51,8 @@ function CardDetails({pokemon}) {
                     return (
                         <div key={key + pokemon.id}>
                             <Text as={'span'} fontSize={'12'} fontWeight={'bold'}>Types: </Text>
-                            {pokemon[key].map(type => {
-                                return <Text as={'span'} fontSize={'10'}>{type}, </Text>
+                            {pokemon[key].map((type, index) => {
+                                return <Text key={type+index} as={'span'} fontSize={'10'}>{type}, </Text>
                             })}
                             <hr style={{border: '0', borderTop: '2px solid white', margin: '2px 0px 2px 0px'}}/>
                         </div>
@@ -62,11 +62,9 @@ function CardDetails({pokemon}) {
                         <div key={key + pokemon.id}>
                             <Text fontSize={''} fontWeight={'bold'}>Weaknesses</Text>
                             <hr style={{border: '0', borderTop: '2px solid white', margin: '2px 0px 2px 0px'}}/>
-                            {pokemon[key].map(weakness => {
+                            {pokemon[key].map((weakness, index) => {
                                 return (
-                                    <>
-                                        <Text fontSize={'10'}>Type: {weakness.type} ({weakness.value})</Text>
-                                    </>
+                                        <Text key={weakness+index} fontSize={'10'}>Type: {weakness.type} ({weakness.value})</Text>
                                 )
                             })}
                             <hr style={{border: '0', borderTop: '2px solid white', margin: '2px 0px 2px 0px'}}/>
@@ -81,4 +79,5 @@ function CardDetails({pokemon}) {
         </div>
     )
 }
+
 export default CardDetails
