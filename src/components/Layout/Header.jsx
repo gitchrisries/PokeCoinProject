@@ -13,7 +13,7 @@ const walletApi = new WalletApi(_apiClient)
 export const HeaderBar = (props) => {
     const {loggedIn} = React.useContext(LoggedContext);
 
-    const {data: walletBalance} = useQuery(['walletBalance'],
+    const {data: walletBalance, error: walletBalanceError, isLoading} = useQuery(['walletBalance'],
         async () => {
             const response = await walletApi.walletBalanceGet()
             localStorage.setItem('walletBalance', response.amount)
@@ -40,6 +40,10 @@ export const HeaderBar = (props) => {
                        width='150px'/>
                 {loggedIn &&
                     <Flex pl={'0.8vw'} pr={'0.8vw'} style={{marginLeft: 'auto'}}>
+                        <Text style={{margin: 'auto'}} fw={600} color='white'>
+                            {isLoading && 'Loading...'}</Text>
+                        <Text style={{margin: 'auto'}} fw={600} color='white'>
+                            {walletBalanceError && walletBalanceError.body.message}</Text>
                         <Text style={{margin: 'auto'}} fw={600} color='white'>
                             Wallet Balance: {walletBalance?.amount}</Text>
                     </Flex>
