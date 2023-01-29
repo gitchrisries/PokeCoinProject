@@ -16,13 +16,12 @@ import {
     Box,
     InputLeftElement, ModalCloseButton, InputRightElement
 } from "@chakra-ui/react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {_apiClient} from "../helpers/globals";
-import {UsersApi} from "../clients/pokecoin/src";
+import {useMutation} from "@tanstack/react-query";
+import {_apiClient} from "../../helpers/globals";
+import {UsersApi} from "../../clients/pokecoin/src";
 import {useEffect, useState} from "react";
 import {HiOutlineKey, HiOutlineEye, HiOutlineEyeOff} from "react-icons/hi"
 import SuccessModalContent from "./SuccessModalContent";
-
 
 const userApi = new UsersApi(_apiClient)
 
@@ -37,9 +36,9 @@ function PasswordModal({isOpen, onClose}) {
     const oldPasswordEmpty = oldPassword === ''
 
     const {mutate: changePassword, isLoading, error} = useMutation(tryChangePassword, {
-        onSuccess: (resp) => {
+        onSuccess: () => {
             setPwChangeSuccess(true)
-        },
+        }
     })
 
     async function tryChangePassword() {
@@ -78,7 +77,7 @@ function PasswordModal({isOpen, onClose}) {
                         }
                         <form onSubmit={(e) => handleSubmit(e)}>
                             <ModalBody pb={4}>
-                                <FormControl isInvalid={oldPasswordEmpty}>
+                                <FormControl isInvalid={oldPasswordEmpty} isRequired>
                                     <FormLabel color={'white'}>Current password</FormLabel>
                                     <InputGroup>
                                         <InputLeftElement pointerEvents='none'
@@ -97,7 +96,7 @@ function PasswordModal({isOpen, onClose}) {
                                     {!oldPasswordEmpty ? (<FormHelperText>Enter current Password.</FormHelperText>)
                                         : (<FormErrorMessage>Current password is required.</FormErrorMessage>)}
                                 </FormControl>
-                                <FormControl mt={4} isInvalid={newPasswordEmpty}>
+                                <FormControl mt={4} isInvalid={newPasswordEmpty} isRequired>
                                     <FormLabel color={'white'}>New password</FormLabel>
                                     <InputGroup>
                                         <InputLeftElement pointerEvents='none'

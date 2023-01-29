@@ -16,53 +16,34 @@ import {
     Box,
     InputLeftElement, ModalCloseButton, InputRightElement
 } from "@chakra-ui/react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {_apiClient} from "../helpers/globals";
-import {UsersApi} from "../clients/pokecoin/src";
-import {useEffect, useRef, useState} from "react";
+import {useMutation} from "@tanstack/react-query";
+import {_apiClient} from "../../helpers/globals";
+import {UsersApi} from "../../clients/pokecoin/src";
+import {useContext, useEffect, useState} from "react";
 import {HiOutlineKey, HiUser, HiOutlineEye, HiOutlineEyeOff} from "react-icons/hi"
 import SuccessModalContent from "./SuccessModalContent";
+import {LoggedContext} from "../../contexts/LoggedContext";
+
 const userApi = new UsersApi(_apiClient)
 
-/*function SuccessModalContent({onClose, username}) {
-    return (
-        <>
-            <ModalHeader textAlign={'center'} fontWeight={'bold'} fontSize={'1.7rem'}
-                         color={'white'}>Successfully logged in!</ModalHeader>
-            <ModalBody textAlign={'center'} pb={6}>
-                <Text color={'white'}>You are logged in as {username}.</Text>
-            </ModalBody>
-            <ModalFooter justifyContent={'center'}>
-                <Button width={'100%'} onClick={onClose} colorScheme='blue' mb={4}>Let's mine!</Button>
-            </ModalFooter>
-        </>
-    )
-}*/
-/*wann useContext?
-wann useCallback? -> useCallback vorteilhaft, insbesondere wenn funktionen an child komponenten gegeben werden
-isLoading etc. überall rein? -> ja
-state onChange direkt in ändern ohne handlerfunktion?
-github, commits?
-kein console.log, besser console.error etc.
- */
-function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTexButton}) {
-    const [logInSuccess, setLogInSuccess] = useState(false)
+function LoginRegisterModal({isOpen, onClose, printedOption, successModalInfo, successTexButton}) {
+    const {setLoggedIn} = useContext(LoggedContext)
+    const [requestSuccess, setRequestSuccess] = useState(false)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
-    const queryClient = useQueryClient()
     const passwordEmpty = password === ''
     const usernameEmpty = username === ''
-    const errorCodes = {UserNotFoundError: 'User not found.', PasswordIncorrectError: 'Password not correct. Try again.',
-        UserAlreadyExistsError: 'User already exists. Please choose another name'}
 
     const {mutate: login, isLoading, error} = useMutation(printedOption==='Register' ? tryRegister : tryLogin, {
         onSuccess: (resp) => {
-            localStorage.setItem('token', resp.token)
-            _apiClient.authentications['token'].apiKey = localStorage.getItem('token');
-            queryClient.fetchQuery({queryKey: ['auth']}).catch(console.error)
-            setLogInSuccess(true)
-        },
+            if(resp.token) {
+                localStorage.setItem('token', resp.token)
+                _apiClient.authentications['token'].apiKey = localStorage.getItem('token');
+                setLoggedIn(true);
+            }
+            setRequestSuccess(true)
+        }
     })
 
     async function tryLogin() {
@@ -90,8 +71,8 @@ function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTe
             <ModalOverlay bg={"blackAlpha.700"}/>
             <ModalContent bg={"#172646"}>
                 <ModalCloseButton _hover={{bg: 'whiteAlpha.200'}} color={'white'}/>
-                {logInSuccess && <SuccessModalContent onClose={onClose} successInfo={`${successModalInfo} ${username}`} textButton={successTexButton} header={`${printedOption} successfull`}/>}
-                {!logInSuccess &&
+                {requestSuccess && <SuccessModalContent onClose={onClose} successInfo={`${successModalInfo} ${username}`} textButton={successTexButton} header={`${printedOption} successfull`}/>}
+                {!requestSuccess &&
                     <>
                         <ModalHeader textAlign={'center'} fontWeight={'bold'} fontSize={'1.7rem'}
                                      color={'white'}>{printedOption}</ModalHeader>
@@ -105,7 +86,7 @@ function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTe
                         }
                         <form onSubmit={(e) => handleSubmit(e)}>
                             <ModalBody pb={4}>
-                                <FormControl isInvalid={usernameEmpty}>
+                                <FormControl isInvalid={usernameEmpty} isRequired>
                                     <FormLabel color={'white'}>Username</FormLabel>
                                     <InputGroup>
                                         <InputLeftElement pointerEvents='none'
@@ -118,7 +99,7 @@ function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTe
                                     {!usernameEmpty ? (<FormHelperText>Enter Username.</FormHelperText>)
                                         : (<FormErrorMessage>Username is required.</FormErrorMessage>)}
                                 </FormControl>
-                                <FormControl mt={4} isInvalid={passwordEmpty}>
+                                <FormControl mt={4} isInvalid={passwordEmpty} isRequired>
                                     <FormLabel color={'white'}>Password</FormLabel>
                                     <InputGroup>
                                         <InputLeftElement pointerEvents='none'
@@ -150,4 +131,4 @@ function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTe
     )
 }
 
-export default LoginModal
+export default LoginRegisterModal

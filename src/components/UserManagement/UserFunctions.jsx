@@ -1,11 +1,10 @@
 import React, {useContext} from "react";
-import {LoggedContext} from "../contexts/LoggedContext";
-import {useDisclosure, HStack, MenuButton, MenuList, Menu, MenuItem, MenuDivider, Avatar} from "@chakra-ui/react";
-import LoginModal from "./LoginModal";
+import {LoggedContext} from "../../contexts/LoggedContext";
+import {useDisclosure, MenuButton, MenuList, Menu, MenuItem, MenuDivider, Avatar} from "@chakra-ui/react";
+import LoginRegisterModal from "./LoginRegisterModal";
 import PasswordModal from "./PasswordModal";
-import {_apiClient} from "../helpers/globals";
+import {_apiClient} from "../../helpers/globals";
 import {UnlockIcon, RepeatIcon, AddIcon, CloseIcon} from "@chakra-ui/icons";
-
 
 function UserFunctions() {
     const {loggedIn, setLoggedIn} = useContext(LoggedContext)
@@ -36,9 +35,9 @@ function UserFunctions() {
                 </MenuList>
             </Menu>
             {isOpenLogin &&
-                <LoginModal isOpen={isOpenLogin} onClose={onCloseLogin} printedOption={'Login'} successModalInfo={'You are logged in as'} successTexButton={"Let's mine!"}/>}
+                <LoginRegisterModal isOpen={isOpenLogin} onClose={onCloseLogin} printedOption={'Login'} successModalInfo={'You are logged in as'} successTexButton={"Let's mine!"}/>}
             {isOpenReg &&
-                <LoginModal isOpen={isOpenReg} onClose={onCloseReg} printedOption={'Register'} successModalInfo={'You are registered as'} successTexButton={'Back to website'}/>}
+                <LoginRegisterModal isOpen={isOpenReg} onClose={onCloseReg} printedOption={'Register'} successModalInfo={'You are registered as'} successTexButton={'Back to website'}/>}
             {isOpenPw &&
                 <PasswordModal isOpen={isOpenPw} onClose={onClosePw} buttonName={'Change Password'}
                                option={'changePassword'}/>}
