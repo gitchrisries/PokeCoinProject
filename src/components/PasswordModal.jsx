@@ -31,25 +31,15 @@ function PasswordModal({isOpen, onClose}) {
     const [pwChangeSuccess, setPwChangeSuccess] = useState(false)
     const [oldPassword, setOldPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
-    const [logInError, setLogInError] = useState('')
     const [showCurrentPassword, setShowCurrentPassword] = useState(false)
     const [showNewPassword, setShowNewPassword] = useState(false)
     const newPasswordEmpty = newPassword === ''
     const oldPasswordEmpty = oldPassword === ''
-    const errorCodes = {UserNotFoundError: 'User not found.', PasswordIncorrectError: 'Password not correct. Try again.'}
 
-    const {mutate: changePassword, isLoading} = useMutation(tryChangePassword, {
+    const {mutate: changePassword, isLoading, error} = useMutation(tryChangePassword, {
         onSuccess: (resp) => {
             setPwChangeSuccess(true)
         },
-        onError: (error) => {
-            if (error.status === 400) {
-                setLogInError(errorCodes[error.body.code])
-            }
-            if (error.status === 500) {
-                setLogInError('Unexpected server error. Try again.')
-            }
-        }
     })
 
     async function tryChangePassword() {
@@ -63,7 +53,6 @@ function PasswordModal({isOpen, onClose}) {
 
     useEffect(() => {
         if (!isOpen) {
-            setLogInError('')
             setOldPassword('')
             setNewPassword('')
         }
@@ -79,12 +68,12 @@ function PasswordModal({isOpen, onClose}) {
                     <>
                         <ModalHeader textAlign={'center'} fontWeight={'bold'} fontSize={'1.7rem'}
                                      color={'white'}>Change Password</ModalHeader>
-                        {logInError &&
+                        {error &&
                             <Box bg={"#1e1e1e"} borderRadius={'0.4rem'}
                                  style={{margin: '0rem 1.5rem 0rem 1.5rem', textAlign: 'center'}}
                                  borderColor={"#E53E3E"} borderWidth={'2px'} padding={'0.5rem'}>
                                 <Text color={'white'}>Change Password failed.</Text>
-                                <Text color={'white'}>{logInError}</Text>
+                                <Text color={'white'}>{error.body.message}.</Text>
                             </Box>
                         }
                         <form onSubmit={(e) => handleSubmit(e)}>

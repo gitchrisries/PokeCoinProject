@@ -22,16 +22,16 @@ function UserFunctions() {
     return (
         <>
             <Menu>
-                <MenuButton as={Avatar} bg='#0398fc'>
+                <MenuButton as={Avatar} bg='#0398fc' _hover={{cursor: 'pointer', bg: 'blue.600'}}>
                 </MenuButton>
                 <MenuList>
                     {!loggedIn ? <>
-                        <MenuItem icon={<UnlockIcon/>} onClick={onOpenLogin}>Login</MenuItem>
-                        <MenuItem icon={<AddIcon/>} onClick={onOpenReg}>Register</MenuItem>
+                        <MenuItem _hover={{bg: '#0398fc'}} icon={<UnlockIcon/>} onClick={onOpenLogin}>Login</MenuItem>
+                        <MenuItem _hover={{bg: '#0398fc'}} icon={<AddIcon/>} onClick={onOpenReg}>Register</MenuItem>
                     </> : <>
-                        <MenuItem bg='#0398fc' icon={<RepeatIcon/>} onClick={onOpenPw}>Change Password</MenuItem>
+                        <MenuItem _hover={{bg: '#0398fc'}} icon={<RepeatIcon/>} onClick={onOpenPw}>Change Password</MenuItem>
                         <MenuDivider/>
-                        <MenuItem icon={<CloseIcon/>} onClick={handleLogout}>Logout</MenuItem>
+                        <MenuItem _hover={{bg: '#0398fc'}} icon={<CloseIcon/>} onClick={handleLogout}>Logout</MenuItem>
                     </>}
                 </MenuList>
             </Menu>

@@ -4,7 +4,7 @@ import {
     useMantineTheme,
 } from '@mantine/core';
 import {
-    BrowserRouter as Router,
+    BrowserRouter as Router, Navigate,
     Route,
     Routes
 } from 'react-router-dom'
@@ -15,9 +15,7 @@ import BuyPackagePage from "./pages/BuyPackagePage";
 import React from "react";
 import ShowCardsPage from "./pages/ShowCardsPage";
 import MiningPage from "./pages/MiningPage";
-import LoginModal from "./components/LoginModal";
 import {HeaderBar} from "./components/Layout/Header";
-
 
 function App() {
 
@@ -43,10 +41,10 @@ function App() {
 
                 }>
                 <Routes>
+                    <Route path="/" element={<Navigate to="/mining" />}/>
                     <Route path='/mining' element={<MiningPage/>}/>
                     <Route path='/buying' element={<BuyPackagePage/>}/>
                     <Route path='/cards' element={<ShowCardsPage/>}/>
-                    <Route path='/login' element={<LoginModal/>}/>
                 </Routes>
             </AppShell>
         </Router>

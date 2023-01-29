@@ -49,7 +49,6 @@ function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTe
     const [logInSuccess, setLogInSuccess] = useState(false)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [logInError, setLogInError] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const queryClient = useQueryClient()
     const passwordEmpty = password === ''
@@ -57,23 +56,13 @@ function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTe
     const errorCodes = {UserNotFoundError: 'User not found.', PasswordIncorrectError: 'Password not correct. Try again.',
         UserAlreadyExistsError: 'User already exists. Please choose another name'}
 
-    const {mutate: login, isLoading} = useMutation(printedOption==='Register' ? tryRegister : tryLogin, {
+    const {mutate: login, isLoading, error} = useMutation(printedOption==='Register' ? tryRegister : tryLogin, {
         onSuccess: (resp) => {
             localStorage.setItem('token', resp.token)
             _apiClient.authentications['token'].apiKey = localStorage.getItem('token');
             queryClient.fetchQuery({queryKey: ['auth']}).catch(console.error)
             setLogInSuccess(true)
         },
-        onError: (error) => {
-            console.log(error);
-            if (error.status === 400) {
-                setLogInError(errorCodes[error.body.code])
-            }
-            //warum statusabfrage?? entsprechender error code wird gesendet
-            if (error.status === 500) {
-                setLogInError('Unexpected server error. Try again.')
-            }
-        }
     })
 
     async function tryLogin() {
@@ -91,7 +80,6 @@ function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTe
 
     useEffect(() => {
         if (!isOpen) {
-            setLogInError('')
             setUsername('')
             setPassword('')
         }
@@ -107,12 +95,12 @@ function LoginModal({isOpen, onClose, printedOption, successModalInfo, successTe
                     <>
                         <ModalHeader textAlign={'center'} fontWeight={'bold'} fontSize={'1.7rem'}
                                      color={'white'}>{printedOption}</ModalHeader>
-                        {logInError &&
+                        {error &&
                             <Box bg={"#1e1e1e"} borderRadius={'0.4rem'}
                                  style={{margin: '0rem 1.5rem 0rem 1.5rem', textAlign: 'center'}}
                                  borderColor={"#E53E3E"} borderWidth={'2px'} padding={'0.5rem'}>
                                 <Text color={'white'}>{printedOption} failed.</Text>
-                                <Text color={'white'}>{logInError}</Text>
+                                <Text color={'white'}>{error.body.message}.</Text>
                             </Box>
                         }
                         <form onSubmit={(e) => handleSubmit(e)}>
