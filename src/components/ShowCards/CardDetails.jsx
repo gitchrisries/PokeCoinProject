@@ -60,7 +60,7 @@ function CardDetails({pokemon}) {
                 } else if (key === 'weaknesses') {
                     return (
                         <div key={key + pokemon.id}>
-                            <Text fontSize={''} fontWeight={'bold'}>Weaknesses</Text>
+                            <Text fontSize={'12'} fontWeight={'bold'}>Weaknesses</Text>
                             <hr style={{border: '0', borderTop: '2px solid white', margin: '2px 0px 2px 0px'}}/>
                             {pokemon[key].map((weakness, index) => {
                                 return (

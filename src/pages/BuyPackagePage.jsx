@@ -11,7 +11,7 @@ import {
 import React, {useContext, useRef, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CardsApi} from "../clients/pokecoin/src";
-import {_apiClient} from "../helpers/globals";
+import {_apiClient, feedbackStr} from "../helpers/globals";
 import {rarityColor} from "../helpers/globals";
 import {Select} from '@mantine/core';
 import {LoggedContext} from "../contexts/LoggedContext";
@@ -72,7 +72,7 @@ function BuyPackagePage() {
 
     const {mutate, isLoading} = useMutation(buyPackage, {
         onSuccess: (data) => {
-            queryClient.invalidateQueries(['walletBalance']).catch(console.log)
+            queryClient.invalidateQueries(['walletBalance']).catch(console.error)
             setNewCards(prev => prev.concat(data.cards))
             toast({
                 title: 'Success',
@@ -122,8 +122,8 @@ function BuyPackagePage() {
         return (
             <Center mt={'20vh'}>
                 <Text fontWeight={'semibold'}
-                      color={'white'}>{packageCostError?.body.message || packageGetError?.body.message}</Text>
-                <Text fontWeight={'semibold'} color={'white'}>Try reloading the page</Text>
+                      color={'white'}>{packageCostError?.body?.message || packageGetError?.body?.message || feedbackStr.unknownError}</Text>
+                <Text fontWeight={'semibold'} color={'white'}>{feedbackStr.tryReload}</Text>
             </Center>
         )
     }
@@ -131,48 +131,46 @@ function BuyPackagePage() {
     if (!loggedIn) {
         return (
             <Center mt={'20vh'}>
-                <Text fontWeight={'semibold'} color={'white'}>You need to be logged in to access this page</Text>
+                <Text fontWeight={'semibold'} color={'white'}>{feedbackStr.accessError}</Text>
             </Center>
         )
     }
 
     return (
-        <>
-            <VStack spacing={'2rem'}>
-                <CardPackSelect selectedPackage={selectedPackage} setSelectedPackage={setSelectedPackage}
-                                selectData={selectData}/>
-                <Box borderRadius='lg' borderColor={'whiteAlpha.400'} color='white' bg={'#1f1f1f'} p={2}
-                     borderWidth='2px'>
-                    <HStack>
-                        <Text color='whitesmoke' fontWeight='bold'>Amount</Text>
-                        <NumberInput focusInputOnChange={false} defaultValue={1} min={1} max={10} width='20'
-                                     onChange={(value) => amount.current = value}>
-                            <NumberInputField borderWidth='3px' bg='gray' color='whitesmoke'>
-                            </NumberInputField>
-                            <NumberInputStepper>
-                                <NumberIncrementStepper/>
-                                <NumberDecrementStepper/>
-                            </NumberInputStepper>
-                        </NumberInput>
-                        <Button isLoading={isLoading} isDisabled={!selectedPackage} colorScheme={'blue'}
-                                onClick={() => handleClick()}>
-                            Buy Package(s)
-                        </Button>
-                    </HStack>
+        <VStack spacing={'2rem'}>
+            <CardPackSelect selectedPackage={selectedPackage} setSelectedPackage={setSelectedPackage}
+                            selectData={selectData}/>
+            <Box borderRadius='lg' borderColor={'whiteAlpha.400'} color='white' bg={'#1f1f1f'} p={2}
+                 borderWidth='2px'>
+                <HStack>
+                    <Text color='whitesmoke' fontWeight='bold'>Amount</Text>
+                    <NumberInput focusInputOnChange={false} defaultValue={1} min={1} max={10} width='20'
+                                 onChange={(value) => amount.current = value}>
+                        <NumberInputField borderWidth='3px' bg='gray' color='whitesmoke'>
+                        </NumberInputField>
+                        <NumberInputStepper>
+                            <NumberIncrementStepper/>
+                            <NumberDecrementStepper/>
+                        </NumberInputStepper>
+                    </NumberInput>
+                    <Button isLoading={isLoading} isDisabled={!selectedPackage} colorScheme={'blue'}
+                            onClick={() => handleClick()}>
+                        Buy Package(s)
+                    </Button>
+                </HStack>
+            </Box>
+            {newCards.length !== 0 &&
+                <Box style={{margin: '3% 5% 0% 5%'}} padding='1%' borderWidth={2} borderColor={'whiteAlpha.400'}
+                     borderRadius='lg' bg={'#1f1f1f'}>
+                    <Center marginBottom='1.5%'>
+                        <Text fontWeight={'bold'} color={'white'}>New Cards</Text>
+                    </Center>
+                    <Grid templateColumns='repeat(5, 1fr)' gap={6}>
+                        <NewCardsGrid newCards={newCards}/>
+                    </Grid>
                 </Box>
-                {newCards.length !== 0 &&
-                    <Box style={{margin: '3% 5% 0% 5%'}} padding='1%' borderWidth={2} borderColor={'whiteAlpha.400'}
-                         borderRadius='lg' bg={'#1f1f1f'}>
-                        <Center marginBottom='1.5%'>
-                            <Text fontWeight={'bold'} color={'white'}>New Cards</Text>
-                        </Center>
-                        <Grid templateColumns='repeat(5, 1fr)' gap={6}>
-                            <NewCardsGrid newCards={newCards}/>
-                        </Grid>
-                    </Box>
-                }
-            </VStack>
-        </>
+            }
+        </VStack>
     )
 }
 

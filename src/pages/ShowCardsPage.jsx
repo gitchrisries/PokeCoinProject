@@ -1,4 +1,4 @@
-import {_apiClient} from "../helpers/globals";
+import {_apiClient, feedbackStr} from "../helpers/globals";
 import {CardsApi} from "../clients/pokecoin/src";
 import {useQuery} from "@tanstack/react-query";
 import React, {useContext, useRef, useState} from "react";
@@ -54,7 +54,7 @@ function ShowCardsPage() {
     if (!loggedIn) {
         return (
             <Center mt={'20vh'}>
-                <Text fontWeight={'semibold'} color={'white'}>You need to be logged in to access this page</Text>
+                <Text fontWeight={'semibold'} color={'white'}>{feedbackStr.accessError}</Text>
             </Center>
         )
     }
@@ -63,8 +63,8 @@ function ShowCardsPage() {
         return (
             <Center mt={'20vh'}>
                 <Text fontWeight={'semibold'}
-                      color={'white'}>{allCardsError?.body.message || userCardsError?.body.message || 'Unexpected Error'}</Text>
-                <Text fontWeight={'semibold'} color={'white'}>Try reloading the page</Text>
+                      color={'white'}>{allCardsError?.body?.message || userCardsError?.body?.message || feedbackStr.unknownError}</Text>
+                <Text fontWeight={'semibold'} color={'white'}>{feedbackStr.tryReload}</Text>
             </Center>
         )
     }

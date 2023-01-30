@@ -11,7 +11,7 @@ import {
     Text, useToast
 } from "@chakra-ui/react";
 import React, {memo, useContext, useEffect, useRef, useState} from "react";
-import {_apiClient} from "../helpers/globals";
+import {_apiClient, feedbackStr} from "../helpers/globals";
 import {BlockchainApi} from "../clients/pokecoin/src";
 import runningGif from "../assets/mining_running.gif";
 import stoppedGif from "../assets/mining_stopped.gif";
@@ -186,8 +186,9 @@ function MiningPage() {
     if (difficultyError || lastBlockError) {
         return (
             <Center mt={'20vh'}>
-                <Text fontWeight={'semibold'} color={'white'}>{difficultyError?.body.message || lastBlockError?.body.message}</Text>
-                <Text fontWeight={'semibold'} color={'white'}>Try reloading the page</Text>
+                <Text fontWeight={'semibold'}
+                      color={'white'}>{difficultyError?.body?.message || lastBlockError?.body?.message || feedbackStr.unknownError}</Text>
+                <Text fontWeight={'semibold'} color={'white'}>{feedbackStr.tryReload}</Text>
             </Center>
         )
     }
@@ -195,7 +196,7 @@ function MiningPage() {
     if (!loggedIn) {
         return (
             <Center mt={'20vh'}>
-                <Text fontWeight={'semibold'} color={'white'}>You need to be logged in to access this page</Text>
+                <Text fontWeight={'semibold'} color={'white'}>{feedbackStr.accessError}</Text>
             </Center>
         )
     }

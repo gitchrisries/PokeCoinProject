@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
-import {ApiClient, UsersApi} from "../clients/pokecoin/src";
+import {UsersApi} from "../clients/pokecoin/src";
 import {_apiClient} from "../helpers/globals";
 
 const userApi = new UsersApi(_apiClient);

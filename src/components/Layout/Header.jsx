@@ -4,7 +4,7 @@ import React from "react";
 import {LoggedContext} from "../../contexts/LoggedContext";
 import {useQuery} from "@tanstack/react-query";
 import {WalletApi} from "../../clients/pokecoin/src";
-import {_apiClient} from "../../helpers/globals";
+import {_apiClient, feedbackStr} from "../../helpers/globals";
 import UserFunctions from "../UserManagement/UserFunctions";
 
 const walletApi = new WalletApi(_apiClient)
@@ -43,7 +43,7 @@ export const HeaderBar = (props) => {
                         <Text style={{margin: 'auto'}} fw={600} color='white'>
                             {isLoading && 'Loading...'}</Text>
                         <Text style={{margin: 'auto'}} fw={600} color='white'>
-                            {walletBalanceError && walletBalanceError.body.message}</Text>
+                            {walletBalanceError && walletBalanceError?.body?.message || feedbackStr.unknownError}</Text>
                         <Text style={{margin: 'auto'}} fw={600} color='white'>
                             {walletBalance && `Wallet Balance: ${walletBalance.amount}`}</Text>
                     </Flex>
