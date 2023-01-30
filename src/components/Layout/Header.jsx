@@ -43,7 +43,7 @@ export const HeaderBar = (props) => {
                         <Text style={{margin: 'auto'}} fw={600} color='white'>
                             {isLoading && 'Loading...'}</Text>
                         <Text style={{margin: 'auto'}} fw={600} color='white'>
-                            {walletBalanceError && walletBalanceError?.body?.message || feedbackStr.unknownError}</Text>
+                            {walletBalanceError && (walletBalanceError?.body?.message || feedbackStr.unknownError)}</Text>
                         <Text style={{margin: 'auto'}} fw={600} color='white'>
                             {walletBalance && `Wallet Balance: ${walletBalance.amount}`}</Text>
                     </Flex>
