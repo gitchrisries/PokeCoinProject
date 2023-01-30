@@ -131,7 +131,7 @@ function MiningPage() {
         if (miningStatus) return await blockchainApi.blockchainBlocksPost({body: block})
     }
 
-    const {data: lastBlock, error: lastBlockError} = useQuery(['lastBlock', postedBlock, workerAmount, miningStatus],
+    const {data: lastBlock, error: lastBlockError} = useQuery(['lastBlock', postedBlock, workerAmount],
         async () => {
             return await blockchainApi.blockchainLastBlockGet()
         }, {
@@ -181,7 +181,7 @@ function MiningPage() {
             }
             runMining()
         }
-    }, [lastBlock, difficulty, loggedIn])
+    }, [lastBlock, difficulty, loggedIn, miningStatus])
 
     if (difficultyError || lastBlockError) {
         return (
