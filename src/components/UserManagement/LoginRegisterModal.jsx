@@ -17,7 +17,7 @@ import {
     InputLeftElement, ModalCloseButton, InputRightElement
 } from "@chakra-ui/react";
 import {useMutation} from "@tanstack/react-query";
-import {_apiClient} from "../../helpers/globals";
+import {_apiClient, feedbackStr} from "../../helpers/globals";
 import {UsersApi} from "../../clients/pokecoin/src";
 import {useContext, useEffect, useState} from "react";
 import {HiOutlineKey, HiUser, HiOutlineEye, HiOutlineEyeOff} from "react-icons/hi"
@@ -81,7 +81,7 @@ function LoginRegisterModal({isOpen, onClose, printedOption, successModalInfo, s
                                  style={{margin: '0rem 1.5rem 0rem 1.5rem', textAlign: 'center'}}
                                  borderColor={"#E53E3E"} borderWidth={'2px'} padding={'0.5rem'}>
                                 <Text color={'white'}>{printedOption} failed.</Text>
-                                <Text color={'white'}>{error.body.message}.</Text>
+                                <Text color={'white'}>{error?.body?.message || feedbackStr.unknownError}.</Text>
                             </Box>
                         }
                         <form onSubmit={(e) => handleSubmit(e)}>

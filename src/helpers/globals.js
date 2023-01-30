@@ -5,4 +5,7 @@ _apiClient.authentications['token'].apiKey = localStorage.getItem('token');
 
 const rarityColor = {Rare: 'purple', Uncommon: 'blue', Common: 'white'};
 
-export {_apiClient, rarityColor}
+const feedbackStr = {unknownError: 'An unexpected Error occured', accessError: 'You need to be logged in to access this page',
+                    tryReload:'Try reloading this page'}
+
+export {_apiClient, rarityColor, feedbackStr}
