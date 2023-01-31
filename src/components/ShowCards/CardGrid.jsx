@@ -3,15 +3,15 @@ import {
     GridItem,
     Img,
     LinkBox,
-    LinkOverlay, Popover,
+    Popover,
     PopoverArrow, PopoverBody, PopoverCloseButton,
     PopoverContent, PopoverHeader,
     PopoverTrigger,
-    Text, Skeleton, Center, Spinner, Box
+    Text, Skeleton, Box
 } from "@chakra-ui/react";
 import CardDetails from "./CardDetails";
 import {rarityColor} from "../../helpers/globals";
-import {useEffect, useRef, useState} from "react";
+import {useState} from "react";
 import fallBack from "../../assets/card_placeholder.jpg"
 
 
